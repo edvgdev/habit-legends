@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -224,9 +228,12 @@ body {
   border-radius: 1rem;
   font-size: 1.25rem;
   color: #ffffff;
-  padding: 0 2rem;
+  padding: 0 1rem;
   height: 60px;
   cursor: pointer;
+  display: flex; 
+  align-items: center; 
+  gap: 8px;
 }
 
 .action-button-secondary {
@@ -289,4 +296,33 @@ body {
 .modal-content textarea:focus {
   border: 1px solid #0BBD8B;
   outline: none;
+}
+
+.admin-subpage-container {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+
+.admin-subpage-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.admin-subpage-title {
+  display:flex;
+  gap: 1rem;
+}
+
+.admin-subpage-title h1 {
+  font-size: 2rem;
+}
+
+.table-container {
+  /* border: 0.5px solid rgba(220, 220, 220, 0.56); */
+  border-radius: 8px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
 }

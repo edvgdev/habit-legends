@@ -14,3 +14,12 @@ export const createCategory = async (category: Category): Promise<Category> => {
         throw new Error("Failed to create category");
     }
 }
+
+export const getCategories = async (): Promise<Category[]> => {
+    try {
+        const response: AxiosResponse<Category[]> = await api.get("habit-category/all");
+        return response.data;
+    } catch (error: any) {
+        throw new Error(`Failed to retrieve category: ${error.response?.status}`);
+    }
+}
