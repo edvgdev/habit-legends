@@ -1,11 +1,11 @@
 import React from 'react'
 
-const Admin = () => {
+const Ranks = () => {
     return (
         <div>
-            Admin
+            Ranks
         </div>
     )
 }
 
-export default Admin
+export default Ranks
