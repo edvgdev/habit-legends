@@ -48,6 +48,7 @@ const CategoryFormModal = (props: Props) => {
                     display: "flex", // Add flex display
                     justifyContent: "center", // Center horizontally
                     alignItems: "center",
+                    zIndex: "1"
                 },
                 content: {
                     width: "auto",
@@ -81,6 +82,9 @@ const CategoryFormModal = (props: Props) => {
                             onChange={(e) => setDescription(e.target.value)}
                         />
                     </div>
+
+                </form>
+                <div>
                     <button style={{ marginRight: "10px" }} className='action-button-secondary' onClick={props.onClose}>Cancel</button>
                     <button
                         type='submit'
@@ -89,8 +93,7 @@ const CategoryFormModal = (props: Props) => {
                     >
                         Save Category
                     </button>
-                </form>
-
+                </div>
             </div>
         </Modal>
     )

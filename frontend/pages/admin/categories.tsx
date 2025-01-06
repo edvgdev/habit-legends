@@ -1,6 +1,5 @@
 import CategoryFormModal from '@/components/admin/categories/category-form-modal';
-import { Columns } from '@/components/admin/categories/columns';
-import { DataTable } from '@/components/data-table';
+import CategoryTable from '@/components/admin/categories/category-table';
 import { getCategories } from '@/services/api';
 import { Category } from '@/types/category';
 import { useRouter } from 'next/router';
@@ -45,7 +44,7 @@ const AdminCategories = () => {
                 </button>
             </div>
             <div className='table-container'>
-                <DataTable columns={Columns} data={categories} />
+                <CategoryTable categories={categories} />
             </div>
             <CategoryFormModal open={isModalOpen} onClose={closeModal} />
             <ToastContainer position='top-center' autoClose={3000} />
