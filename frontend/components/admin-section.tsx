@@ -4,6 +4,7 @@ interface Props {
     title: string;
     description: string;
     buttonText: string;
+    onClick: () => void;
 }
 
 const AdminSection = (props: Props) => {
@@ -13,7 +14,7 @@ const AdminSection = (props: Props) => {
                 <h1>{props.title}</h1>
                 <p>{props.description}</p>
             </div>
-            <button>{props.buttonText}</button>
+            <button onClick={props.onClick}>{props.buttonText}</button>
         </div>
     )
 }
