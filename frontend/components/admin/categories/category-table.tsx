@@ -12,9 +12,11 @@ import { FaEdit, FaTrash } from 'react-icons/fa';
 
 interface Props {
     categories: Category[]
+    openModal: (category?: Category) => void;
+    onDelete: (category: Category) => void;
 }
 
-const CategoryTable = (props: Props) => {
+const CategoryTable = ({ categories, openModal, onDelete }: Props) => {
 
     const columns = useMemo<MRT_ColumnDef<Category>[]>(
         () => [
@@ -31,7 +33,7 @@ const CategoryTable = (props: Props) => {
 
     const table = useMaterialReactTable({
         columns,
-        data: props.categories,
+        data: categories,
         enableRowActions: true,
         mrtTheme: {
             baseBackgroundColor: "#232C43",
@@ -44,11 +46,12 @@ const CategoryTable = (props: Props) => {
                 right: ['mrt-row-actions'],
             },
         },
-        renderRowActionMenuItems: ({ closeMenu }) => [
+        renderRowActionMenuItems: ({ row, closeMenu }) => [
             <MenuItem
                 key={0}
                 onClick={() => {
-                    // View profile logic...
+                    openModal(row.original);
+                    closeMenu();
                 }}
                 sx={{ m: 0 }}
             >
@@ -60,7 +63,7 @@ const CategoryTable = (props: Props) => {
             <MenuItem
                 key={1}
                 onClick={() => {
-                    // Send email logic...
+                    onDelete(row.original);
                     closeMenu();
                 }}
                 sx={{ m: 0 }}

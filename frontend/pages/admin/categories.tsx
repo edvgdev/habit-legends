@@ -1,21 +1,46 @@
 import CategoryFormModal from '@/components/admin/categories/category-form-modal';
 import CategoryTable from '@/components/admin/categories/category-table';
-import { getCategories } from '@/services/api';
+import ConfirmationModal from '@/components/confirmation-modal';
+import { deleteCategory, getCategories } from '@/services/api';
 import { Category } from '@/types/category';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react'
 import { FaArrowLeft, FaPlus } from 'react-icons/fa';
-import { ToastContainer } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 
 const AdminCategories = () => {
 
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isFormModalOpen, setIsFormModalOpen] = useState(false);
+    const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
     const [categories, setCategories] = useState<Category[]>([]);
-
-    const openModal = () => setIsModalOpen(true);
-    const closeModal = () => setIsModalOpen(false);
+    const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
 
     const router = useRouter();
+
+    const openModal = (category?: Category) => {
+        if (category) {
+            setSelectedCategory(category);
+        } else {
+            setSelectedCategory(null);
+        }
+        setIsFormModalOpen(true);
+    };
+    const closeModal = () => {
+        setIsFormModalOpen(false);
+        setSelectedCategory(null);
+    };
+
+    const openConfirmationModal = (category: Category) => {
+        setSelectedCategory(category);
+        setIsConfirmationModalOpen(true);
+    };
+
+    const closeConfirmationModal = () => {
+        setIsConfirmationModalOpen(false);
+        setSelectedCategory(null);
+    };
+
+
 
     const fetchCategories = async () => {
         try {
@@ -25,6 +50,25 @@ const AdminCategories = () => {
             console.error('Error fetching categories:', error);
         }
     };
+
+    const handleDelete = async () => {
+        if (selectedCategory) {
+            try {
+                await deleteCategory(selectedCategory.id!);
+                toast.success('Category deleted successfully');
+                fetchCategories(); // Refresh table
+            } catch (error) {
+                toast.error('Failed to delete category');
+                console.error('Error deleting category:', error);
+            } finally {
+                closeConfirmationModal();
+            }
+        }
+    };
+
+    const handleSuccessfulSave = () => {
+        fetchCategories();
+    }
 
     useEffect(() => {
         fetchCategories();
@@ -39,14 +83,30 @@ const AdminCategories = () => {
                     </button>
                     <h1>Categories</h1>
                 </div>
-                <button className='action-button-primary' onClick={openModal}>
+                <button className='action-button-primary' onClick={() => openModal()}>
                     <FaPlus /> New Category
                 </button>
             </div>
             <div className='table-container'>
-                <CategoryTable categories={categories} />
+                <CategoryTable
+                    categories={categories}
+                    openModal={openModal}
+                    onDelete={openConfirmationModal}
+                />
             </div>
-            <CategoryFormModal open={isModalOpen} onClose={closeModal} />
+            <CategoryFormModal
+                open={isFormModalOpen}
+                onClose={closeModal}
+                category={selectedCategory}
+                onSuccess={handleSuccessfulSave}
+            />
+            <ConfirmationModal
+                isOpen={isConfirmationModalOpen}
+                title='Delete Category'
+                message={`You are about to delete "${selectedCategory?.name}". Do you want to proceed?`}
+                onClose={closeConfirmationModal}
+                onConfirm={handleDelete}
+            />
             <ToastContainer position='top-center' autoClose={3000} />
         </div>
     )
