@@ -1,6 +1,6 @@
-import { createCategory } from '@/services/api';
+import { createCategory, updateCategory } from '@/services/api';
 import { Category } from '@/types/category';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Modal from 'react-modal';
 import { toast } from 'react-toastify';
 
@@ -8,46 +8,74 @@ import { toast } from 'react-toastify';
 interface Props {
     open: boolean;
     onClose: () => void;
+    onSuccess: () => void;
+    category?: Category | null;
 }
 
-const CategoryFormModal = (props: Props) => {
+const CategoryFormModal = ({ open, onClose, category, onSuccess }: Props) => {
 
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
 
+    useEffect(() => {
+        console.log(category)
+        if (category) {
+            setName(category.name || '');
+            setDescription(category.description || '');
+        } else {
+            setName('');
+            setDescription('');
+        }
+
+    }, [category]);
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        const newCategory: Category = {
-            id: null,
+        const categoryToSave: Category = {
+            id: category?.id || null,
             name,
             description,
-            createdAt: null
+            createdAt: category?.createdAt || null
         }
 
         try {
-            const savedCategory = await createCategory(newCategory);
+            const savedCategory = category
+                ? await updateCategory(categoryToSave)
+                : await createCategory(categoryToSave);
             console.log(savedCategory)
 
-            toast.success(`Successfully created category: ${savedCategory.name}`)
+            toast.success(
+                category
+                    ? `Successfully updated category: ${savedCategory.name}`
+                    : `Successfully created category: ${savedCategory.name}`
+            );
+
+            onSuccess();
         } catch (error) {
-            toast.error(`Failed to create category ${error}`);
+            toast.error(
+                category
+                    ? `Failed to update category ${error}`
+                    : `Failed to create category ${error}`
+
+            );
+        } finally {
+            onClose();
         }
 
-        console.log(name);
-        console.log(description);
-        props.onClose();
+
     };
 
     return (
         <Modal
-            isOpen={props.open}
-            onRequestClose={props.onClose}
+            isOpen={open}
+            onRequestClose={onClose}
             style={{
                 overlay: {
                     backgroundColor: " rgba(0, 0, 0, 0.7)",
                     display: "flex", // Add flex display
                     justifyContent: "center", // Center horizontally
                     alignItems: "center",
+                    zIndex: "1"
                 },
                 content: {
                     width: "auto",
@@ -62,7 +90,7 @@ const CategoryFormModal = (props: Props) => {
             }}
         >
             <div className='modal-content'>
-                <h2>Create New Category</h2>
+                <h2>{category ? 'Edit Category' : 'Create New Category'}</h2>
                 <form>
                     <div>
                         <label>Category Name:</label>
@@ -70,6 +98,7 @@ const CategoryFormModal = (props: Props) => {
                             type="text"
                             placeholder='Enter category name'
                             required
+                            value={name}
                             onChange={(e) => setName(e.target.value)}
                         />
                     </div>
@@ -78,19 +107,27 @@ const CategoryFormModal = (props: Props) => {
                         <textarea
                             placeholder='Enter Description'
                             required
+                            value={description}
                             onChange={(e) => setDescription(e.target.value)}
                         />
                     </div>
-                    <button style={{ marginRight: "10px" }} className='action-button-secondary' onClick={props.onClose}>Cancel</button>
+
+                </form>
+                <div>
+                    <button
+                        style={{ marginRight: "10px" }}
+                        className='action-button-secondary'
+                        onClick={onClose}>
+                        Cancel
+                    </button>
                     <button
                         type='submit'
                         className='action-button-primary'
                         onClick={handleSubmit}
                     >
-                        Save Category
+                        {category ? 'Update Category' : 'Save Category'}
                     </button>
-                </form>
-
+                </div>
             </div>
         </Modal>
     )

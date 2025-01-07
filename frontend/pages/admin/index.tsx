@@ -1,4 +1,4 @@
-import AdminSection from '@/components/admin-section'
+import AdminSection from '@/components/admin/admin-section'
 import { useRouter } from 'next/router'
 import React from 'react'
 import AdminCategories from './categories';
