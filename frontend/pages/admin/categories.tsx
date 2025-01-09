@@ -68,11 +68,11 @@ const AdminCategories = () => {
 
     const handleSuccessfulSave = () => {
         fetchCategories();
-    }
+    };
 
     useEffect(() => {
         fetchCategories();
-    }, [])
+    }, []);
 
     return (
         <div className='admin-subpage-container'>

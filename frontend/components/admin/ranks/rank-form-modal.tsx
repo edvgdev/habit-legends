@@ -1,67 +1,64 @@
-import { createCategory, updateCategory } from '@/services/api';
-import { Category } from '@/types/category';
+import { createRank, updateRank } from '@/services/api';
+import { Rank } from '@/types/Rank';
 import React, { useEffect, useState } from 'react';
 import Modal from 'react-modal';
 import { toast } from 'react-toastify';
-
 
 interface Props {
     open: boolean;
     onClose: () => void;
     onSuccess: () => void;
-    category?: Category | null;
+    rank?: Rank | null;
 }
 
-const CategoryFormModal = ({ open, onClose, category, onSuccess }: Props) => {
+const RankFormModal = ({ open, onClose, rank, onSuccess }: Props) => {
 
     const [name, setName] = useState('');
-    const [description, setDescription] = useState('');
+    const [minExp, setMinExp] = useState(0);
 
     useEffect(() => {
-        if (category) {
-            setName(category.name || '');
-            setDescription(category.description || '');
+        if (rank) {
+            setName(rank.name || '');
+            setMinExp(rank.minExp || 0);
         } else {
             setName('');
-            setDescription('');
+            setMinExp(0);
         }
 
-    }, [category]);
+    }, [rank]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        const categoryToSave: Category = {
-            id: category?.id || null,
+
+        const rankToSave: Rank = {
+            id: rank?.id || null,
             name,
-            description,
-            createdAt: category?.createdAt || null
+            minExp,
         }
 
         try {
-            const savedCategory = category
-                ? await updateCategory(categoryToSave)
-                : await createCategory(categoryToSave);
+            const savedRank = rank
+                ? await updateRank(rankToSave)
+                : await createRank(rankToSave);
 
             toast.success(
-                category
-                    ? `Successfully updated category: ${savedCategory.name}`
-                    : `Successfully created category: ${savedCategory.name}`
+                rank
+                    ? `Successfully updated rank: ${savedRank.name}`
+                    : `Successfully created rank: ${savedRank.name}`
             );
 
             onSuccess();
         } catch (error) {
             toast.error(
-                category
-                    ? `Failed to update category ${error}`
-                    : `Failed to create category ${error}`
+                rank
+                    ? `Failed to update rank ${error}`
+                    : `Failed to create rank ${error}`
 
             );
         } finally {
             onClose();
         }
-    };
-
-    const isSaveDisabled = !name || !description;
+    }
 
     return (
         <Modal
@@ -88,25 +85,26 @@ const CategoryFormModal = ({ open, onClose, category, onSuccess }: Props) => {
             }}
         >
             <div className='modal-content'>
-                <h2>{category ? 'Edit Category' : 'Create New Category'}</h2>
+                <h2>{rank ? 'Edit Rank' : 'Create New Rank'}</h2>
                 <form>
                     <div>
-                        <label>Category Name:</label>
+                        <label>Rank Name:</label>
                         <input
                             type="text"
-                            placeholder='Enter category name'
+                            placeholder='Enter rank name'
                             required
                             value={name}
                             onChange={(e) => setName(e.target.value)}
                         />
                     </div>
                     <div>
-                        <label>Description:</label>
-                        <textarea
-                            placeholder='Enter Description'
+                        <label>Minimum Exp:</label>
+                        <input
+                            type='number'
                             required
-                            value={description}
-                            onChange={(e) => setDescription(e.target.value)}
+                            min={0}
+                            value={minExp}
+                            onChange={(e) => setMinExp(e.target.value ? parseFloat(e.target.value) : 0)}
                         />
                     </div>
 
@@ -122,9 +120,9 @@ const CategoryFormModal = ({ open, onClose, category, onSuccess }: Props) => {
                         type='submit'
                         className='action-button-primary'
                         onClick={handleSubmit}
-                        disabled={isSaveDisabled}
+                        disabled={!name}
                     >
-                        {category ? 'Update Category' : 'Save Category'}
+                        {rank ? 'Update Rank' : 'Save Rank'}
                     </button>
                 </div>
             </div>
@@ -132,4 +130,4 @@ const CategoryFormModal = ({ open, onClose, category, onSuccess }: Props) => {
     )
 }
 
-export default CategoryFormModal
+export default RankFormModal

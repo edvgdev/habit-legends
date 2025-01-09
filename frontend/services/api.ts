@@ -1,10 +1,14 @@
 import { Category } from "@/types/category";
+import { Rank } from "@/types/Rank";
 import { Stat } from "@/types/stat";
+import { UserPlan } from "@/types/user-plan";
 import axios, { AxiosInstance, AxiosResponse } from "axios";
 
 const api: AxiosInstance = axios.create({
     baseURL: "/api/"
 });
+
+// Categories
 
 export const createCategory = async (category: Category): Promise<Category> => {
     try {
@@ -44,6 +48,8 @@ export const deleteCategory = async (id: number): Promise<void> => {
     }
 };
 
+// Stats
+
 export const createStat = async (stat: Stat): Promise<Stat> => {
     try {
         const response: AxiosResponse<Stat> = await api.post("stat", stat);
@@ -81,4 +87,85 @@ export const deleteStat = async (id: number): Promise<void> => {
         throw new Error("Failed to delete stat");
     }
 };
+
+// Ranks
+
+export const createRank = async (rank: Rank): Promise<Rank> => {
+    try {
+        const response: AxiosResponse<Rank> = await api.post("rank", rank);
+        return response.data;
+    } catch (error: any) {
+        console.error(error.response?.status);
+        throw new Error("Failed to create rank");
+    }
+}
+
+export const updateRank = async (rank: Rank): Promise<Rank> => {
+    try {
+        const response: AxiosResponse<Rank> = await api.put(`rank/${rank.id}`, rank);
+        return response.data;
+    } catch (error: any) {
+        console.error(error.response?.status);
+        throw new Error("Failed to update rank");
+    }
+}
+
+export const getRanks = async (): Promise<Rank[]> => {
+    try {
+        const response: AxiosResponse<Rank[]> = await api.get("rank/all");
+        return response.data;
+    } catch (error: any) {
+        throw new Error(`Failed to retrieve rank: ${error.response?.status}`);
+    }
+}
+
+export const deleteRank = async (id: number): Promise<void> => {
+    try {
+        await api.delete(`rank/${id}`);
+    } catch (error: any) {
+        console.error(error.response?.status);
+        throw new Error("Failed to delete rank");
+    }
+};
+
+// User plan
+
+export const createUserPlan = async (userPlan: UserPlan): Promise<UserPlan> => {
+    try {
+        const response: AxiosResponse<UserPlan> = await api.post("user-plan", userPlan);
+        return response.data;
+    } catch (error: any) {
+        console.error(error.response?.status);
+        throw new Error("Failed to create UserPlan");
+    }
+}
+
+export const updateUserPlan = async (userPlan: UserPlan): Promise<UserPlan> => {
+    try {
+        const response: AxiosResponse<UserPlan> = await api.put(`user-plan/${userPlan.id}`, userPlan);
+        return response.data;
+    } catch (error: any) {
+        console.error(error.response?.status);
+        throw new Error("Failed to update UserPlan");
+    }
+}
+
+export const getUserPlans = async (): Promise<UserPlan[]> => {
+    try {
+        const response: AxiosResponse<UserPlan[]> = await api.get("user-plan/all");
+        return response.data;
+    } catch (error: any) {
+        throw new Error(`Failed to retrieve UserPlan: ${error.response?.status}`);
+    }
+}
+
+export const deleteUserPlan = async (id: number): Promise<void> => {
+    try {
+        await api.delete(`user-plan/${id}`);
+    } catch (error: any) {
+        console.error(error.response?.status);
+        throw new Error("Failed to delete UserPlan");
+    }
+};
+
 
