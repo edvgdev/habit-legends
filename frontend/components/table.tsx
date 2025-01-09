@@ -92,7 +92,9 @@ const Table = <T extends MRT_RowData>({ data, columns, openModal, onDelete }: Pr
                             root: {
                                 borderRadius: '12px', // Rounded corners
                                 boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.3)',
-                                padding: '1rem 0'
+                                padding: '1rem 0',
+                                maxWidth: "100%",
+                                overflowX: "auto"
                             },
                         },
                     },
