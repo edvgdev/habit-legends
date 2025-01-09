@@ -20,6 +20,7 @@ const ConfirmationModal = ({ isOpen, title, message, onClose, onConfirm }: Props
                     display: "flex",
                     justifyContent: "center",
                     alignItems: "center",
+                    zIndex: '1'
                 },
                 content: {
                     width: "auto",

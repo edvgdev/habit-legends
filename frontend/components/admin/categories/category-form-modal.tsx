@@ -61,9 +61,9 @@ const CategoryFormModal = ({ open, onClose, category, onSuccess }: Props) => {
         } finally {
             onClose();
         }
-
-
     };
+
+    const isSaveDisabled = !name || !description;
 
     return (
         <Modal
@@ -124,6 +124,7 @@ const CategoryFormModal = ({ open, onClose, category, onSuccess }: Props) => {
                         type='submit'
                         className='action-button-primary'
                         onClick={handleSubmit}
+                        disabled={isSaveDisabled}
                     >
                         {category ? 'Update Category' : 'Save Category'}
                     </button>
