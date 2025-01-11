@@ -269,22 +269,24 @@ body {
   margin-bottom: 50px;
 }
 
-.modal-content form div {
+
+.modal-content-form {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
   margin-bottom: 2rem;
 }
 
-.modal-content div {
+.modal-button-group {
   display: flex;
   gap: 0.5rem;
   margin-bottom: 2rem;
 }
 
 .modal-content input,
-.modal-content textarea {
-  width: 90%;
+.modal-content textarea,
+.modal-content select {
+  width: 94%;
   padding: 1rem;
   background-color: transparent;
   border: 1px solid #ddd;
@@ -293,8 +295,14 @@ body {
   font-size: 1.5rem;
 }
 
+.modal-content select option {
+  width: 95%;
+  background-color: #181F30;
+}
+
 .modal-content input:focus,
-.modal-content textarea:focus {
+.modal-content textarea:focus,
+.modal-content select:focus {
   border: 1px solid #0BBD8B;
   outline: none;
 }
@@ -318,6 +326,41 @@ body {
   padding-left: 2.5rem;
 }
 
+.stat-selector {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin: 20px 0;
+}
+
+.stat-selector select {
+  width: 45%;
+}
+
+.stat-selector input {
+  width: 30%;
+}
+
+.stat-selector button {
+  width: 10%;
+}
+
+.modal-content-stat {
+  margin-bottom: 3rem;
+}
+
+.modal-content-stat button {
+  background-color: transparent;
+  color: white;
+  border: none;
+  font-size: 1.0rem;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.modal-content-stat button:hover {
+  color: #0BBD8B;
+}
 
 .admin-subpage-container {
   padding: 2rem;

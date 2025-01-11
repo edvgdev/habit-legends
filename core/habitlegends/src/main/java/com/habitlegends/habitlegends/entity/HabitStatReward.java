@@ -17,7 +17,7 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "habit_stat_reward")
 public class HabitStatReward {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -97,7 +97,5 @@ public class HabitStatReward {
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
-
-    
 
 }

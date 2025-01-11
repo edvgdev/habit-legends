@@ -2,16 +2,17 @@ package com.habitlegends.habitlegends.service;
 
 import java.util.List;
 
-import com.habitlegends.habitlegends.dto.HabitDTO;
+import com.habitlegends.habitlegends.details.HabitAndStatRewardsDetails;
+import com.habitlegends.habitlegends.details.HabitDetails;
 
 public interface HabitService {
-    HabitDTO createHabit(HabitDTO habitDTO);
+    HabitDetails createHabit(HabitAndStatRewardsDetails habitAndStatRewardsDetails);
 
-    HabitDTO getHabitById(Long id);
+    HabitDetails getHabitById(Long id);
 
-    List<HabitDTO> getAllHabits();
+    List<HabitDetails> getAllHabits();
 
-    HabitDTO updateHabit(Long id, HabitDTO habitDTO);
+    HabitDetails updateHabit(Long id, HabitAndStatRewardsDetails habitAndStatRewardsDetails);
 
     void deleteHabit(Long id);
 }

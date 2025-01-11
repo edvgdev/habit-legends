@@ -87,7 +87,7 @@ const RankFormModal = ({ open, onClose, rank, onSuccess }: Props) => {
             <div className='modal-content'>
                 <h2>{rank ? 'Edit Rank' : 'Create New Rank'}</h2>
                 <form>
-                    <div>
+                    <div className='modal-content-form'>
                         <label>Rank Name:</label>
                         <input
                             type="text"
@@ -97,7 +97,7 @@ const RankFormModal = ({ open, onClose, rank, onSuccess }: Props) => {
                             onChange={(e) => setName(e.target.value)}
                         />
                     </div>
-                    <div>
+                    <div className='modal-content-form'>
                         <label>Minimum Exp:</label>
                         <input
                             type='number'
@@ -109,7 +109,7 @@ const RankFormModal = ({ open, onClose, rank, onSuccess }: Props) => {
                     </div>
 
                 </form>
-                <div>
+                <div className='modal-button-group'>
                     <button
                         style={{ marginRight: "10px" }}
                         className='action-button-secondary'

@@ -5,3 +5,8 @@ export interface Stat {
     createdAt: string | null;
     icon: string;
 }
+
+export interface StatReward {
+    statId: number | null;
+    reward: number | null;
+}

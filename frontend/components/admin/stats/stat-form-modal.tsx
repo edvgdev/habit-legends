@@ -142,7 +142,7 @@ const StatFormModal = ({ open, onClose, stat, onSuccess }: Props) => {
             <div className='modal-content'>
                 <h2>{stat ? 'Edit Stat' : 'Create New Stat'}</h2>
                 <form>
-                    <div>
+                    <div className='modal-content-form'>
                         <label>Stat Name:</label>
                         <input
                             type="text"
@@ -152,7 +152,7 @@ const StatFormModal = ({ open, onClose, stat, onSuccess }: Props) => {
                             onChange={(e) => setName(e.target.value)}
                         />
                     </div>
-                    <div>
+                    <div className='modal-content-form'>
                         <label>Description:</label>
                         <textarea
                             placeholder='Enter Description'
@@ -162,7 +162,7 @@ const StatFormModal = ({ open, onClose, stat, onSuccess }: Props) => {
                         />
                     </div>
 
-                    <div>
+                    <div className='modal-content-form'>
                         <label>Icon:</label>
                         {iconUrl && !icon && (
                             <div>
@@ -184,7 +184,7 @@ const StatFormModal = ({ open, onClose, stat, onSuccess }: Props) => {
                     </div>
 
                 </form>
-                <div>
+                <div className='modal-button-group'>
                     <button
                         style={{ marginRight: "10px" }}
                         className='action-button-secondary'
