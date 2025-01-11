@@ -10,6 +10,8 @@ public interface HabitStatRewardService {
 
     HabitStatRewardDTO getHabitStatRewardById(Long id);
 
+    List<HabitStatRewardDTO> getHabitStatRewardsByHabitId(Long id);
+
     List<HabitStatRewardDTO> getAllHabitStatRewards();
 
     HabitStatRewardDTO updateHabitStatReward(Long id, HabitStatRewardDTO habitDTO);

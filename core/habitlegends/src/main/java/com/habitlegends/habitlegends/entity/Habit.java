@@ -16,7 +16,7 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "habit")
 public class Habit {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -33,6 +33,9 @@ public class Habit {
 
     @Column(name = "base_exp_reward", nullable = false)
     private Integer baseExpReward;
+
+    @Column(name = "image_link", length = 255)
+    private String imageLink;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -107,6 +110,12 @@ public class Habit {
         this.updatedAt = updatedAt;
     }
 
-    
+    public String getImageLink() {
+        return imageLink;
+    }
+
+    public void setImageLink(String imageLink) {
+        this.imageLink = imageLink;
+    }
 
 }

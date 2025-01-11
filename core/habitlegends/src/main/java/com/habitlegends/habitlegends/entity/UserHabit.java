@@ -26,7 +26,7 @@ public class UserHabit {
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "habit_id",nullable = false, referencedColumnName = "id")
+    @JoinColumn(name = "habit_id", nullable = false, referencedColumnName = "id")
     private Habit habit;
 
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -69,6 +69,4 @@ public class UserHabit {
         this.createdAt = createdAt;
     }
 
-    
-    
 }

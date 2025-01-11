@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.habitlegends.habitlegends.details.HabitAndStatRewardsDetails;
+import com.habitlegends.habitlegends.details.HabitDetails;
 import com.habitlegends.habitlegends.dto.HabitDTO;
 import com.habitlegends.habitlegends.service.HabitService;
 
@@ -26,23 +28,24 @@ public class HabitController {
     }
 
     @PostMapping
-    public ResponseEntity<HabitDTO> createHabit(@RequestBody HabitDTO habitDTO) {
-        return ResponseEntity.ok(habitService.createHabit(habitDTO));
+    public ResponseEntity<HabitDetails> createHabit(@RequestBody HabitAndStatRewardsDetails habitStatRewardsDTO) {
+        return ResponseEntity.ok(habitService.createHabit(habitStatRewardsDTO));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<HabitDTO> getHabitById(@PathVariable Long id) {
+    public ResponseEntity<HabitDetails> getHabitById(@PathVariable Long id) {
         return ResponseEntity.ok(habitService.getHabitById(id));
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<HabitDTO>> getAllHabits() {
+    public ResponseEntity<List<HabitDetails>> getAllHabits() {
         return ResponseEntity.ok(habitService.getAllHabits());
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<HabitDTO> updateHabit(@PathVariable Long id, @RequestBody HabitDTO habitDTO) {
-        return ResponseEntity.ok(habitService.updateHabit(id, habitDTO));
+    public ResponseEntity<HabitDetails> updateHabit(@PathVariable Long id,
+            @RequestBody HabitAndStatRewardsDetails habitStatRewardsDTO) {
+        return ResponseEntity.ok(habitService.updateHabit(id, habitStatRewardsDTO));
     }
 
     @DeleteMapping("/{id}")

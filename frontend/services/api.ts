@@ -1,4 +1,5 @@
 import { Category } from "@/types/category";
+import { HabitAndStatRewards, HabitDetails } from "@/types/habit";
 import { Rank } from "@/types/Rank";
 import { Stat } from "@/types/stat";
 import { UserPlan } from "@/types/user-plan";
@@ -18,7 +19,7 @@ export const createCategory = async (category: Category): Promise<Category> => {
         console.error(error.response?.status);
         throw new Error("Failed to create category");
     }
-}
+};
 
 export const updateCategory = async (category: Category): Promise<Category> => {
     try {
@@ -28,7 +29,7 @@ export const updateCategory = async (category: Category): Promise<Category> => {
         console.error(error.response?.status);
         throw new Error("Failed to update category");
     }
-}
+};
 
 export const getCategories = async (): Promise<Category[]> => {
     try {
@@ -37,7 +38,7 @@ export const getCategories = async (): Promise<Category[]> => {
     } catch (error: any) {
         throw new Error(`Failed to retrieve category: ${error.response?.status}`);
     }
-}
+};
 
 export const deleteCategory = async (id: number): Promise<void> => {
     try {
@@ -58,7 +59,7 @@ export const createStat = async (stat: Stat): Promise<Stat> => {
         console.error(error.response?.status);
         throw new Error("Failed to create stat");
     }
-}
+};
 
 export const updateStat = async (stat: Stat): Promise<Stat> => {
     try {
@@ -68,7 +69,7 @@ export const updateStat = async (stat: Stat): Promise<Stat> => {
         console.error(error.response?.status);
         throw new Error("Failed to update stat");
     }
-}
+};
 
 export const getStats = async (): Promise<Stat[]> => {
     try {
@@ -77,7 +78,7 @@ export const getStats = async (): Promise<Stat[]> => {
     } catch (error: any) {
         throw new Error(`Failed to retrieve stat: ${error.response?.status}`);
     }
-}
+};
 
 export const deleteStat = async (id: number): Promise<void> => {
     try {
@@ -98,7 +99,7 @@ export const createRank = async (rank: Rank): Promise<Rank> => {
         console.error(error.response?.status);
         throw new Error("Failed to create rank");
     }
-}
+};
 
 export const updateRank = async (rank: Rank): Promise<Rank> => {
     try {
@@ -108,7 +109,7 @@ export const updateRank = async (rank: Rank): Promise<Rank> => {
         console.error(error.response?.status);
         throw new Error("Failed to update rank");
     }
-}
+};
 
 export const getRanks = async (): Promise<Rank[]> => {
     try {
@@ -117,7 +118,7 @@ export const getRanks = async (): Promise<Rank[]> => {
     } catch (error: any) {
         throw new Error(`Failed to retrieve rank: ${error.response?.status}`);
     }
-}
+};
 
 export const deleteRank = async (id: number): Promise<void> => {
     try {
@@ -138,7 +139,7 @@ export const createUserPlan = async (userPlan: UserPlan): Promise<UserPlan> => {
         console.error(error.response?.status);
         throw new Error("Failed to create UserPlan");
     }
-}
+};
 
 export const updateUserPlan = async (userPlan: UserPlan): Promise<UserPlan> => {
     try {
@@ -148,7 +149,7 @@ export const updateUserPlan = async (userPlan: UserPlan): Promise<UserPlan> => {
         console.error(error.response?.status);
         throw new Error("Failed to update UserPlan");
     }
-}
+};
 
 export const getUserPlans = async (): Promise<UserPlan[]> => {
     try {
@@ -157,7 +158,7 @@ export const getUserPlans = async (): Promise<UserPlan[]> => {
     } catch (error: any) {
         throw new Error(`Failed to retrieve UserPlan: ${error.response?.status}`);
     }
-}
+};
 
 export const deleteUserPlan = async (id: number): Promise<void> => {
     try {
@@ -167,5 +168,47 @@ export const deleteUserPlan = async (id: number): Promise<void> => {
         throw new Error("Failed to delete UserPlan");
     }
 };
+
+// Habit
+
+export const createHabit = async (habitStatRewards: HabitAndStatRewards): Promise<HabitDetails> => {
+    try {
+        const response: AxiosResponse<HabitDetails> = await api.post("habit", habitStatRewards);
+        return response.data;
+    } catch (error: any) {
+        console.error(error.response?.status);
+        throw new Error("Failed to create Habit");
+    }
+};
+
+export const updateHabit = async (habitStatRewards: HabitAndStatRewards): Promise<HabitDetails> => {
+    try {
+        const response: AxiosResponse<HabitDetails> = await api.put(`habit/${habitStatRewards.habit.id}`, habitStatRewards);
+        return response.data;
+    } catch (error: any) {
+        console.error(error.response?.status);
+        throw new Error("Failed to update habit");
+    }
+};
+
+export const getHabits = async (): Promise<HabitDetails[]> => {
+    try {
+        const response: AxiosResponse<HabitDetails[]> = await api.get("habit/all");
+        return response.data;
+    } catch (error: any) {
+        throw new Error(`Failed to retrieve Habits: ${error.response?.status}`);
+    }
+};
+
+export const deleteHabit = async (id: number): Promise<void> => {
+    try {
+        await api.delete(`habit/${id}`);
+    } catch (error: any) {
+        console.error(error.response?.status);
+        throw new Error("Failed to delete habit");
+    }
+};
+
+
 
 

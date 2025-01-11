@@ -90,7 +90,7 @@ const CategoryFormModal = ({ open, onClose, category, onSuccess }: Props) => {
             <div className='modal-content'>
                 <h2>{category ? 'Edit Category' : 'Create New Category'}</h2>
                 <form>
-                    <div>
+                    <div className='modal-content-form'>
                         <label>Category Name:</label>
                         <input
                             type="text"
@@ -100,7 +100,7 @@ const CategoryFormModal = ({ open, onClose, category, onSuccess }: Props) => {
                             onChange={(e) => setName(e.target.value)}
                         />
                     </div>
-                    <div>
+                    <div className='modal-content-form'>
                         <label>Description:</label>
                         <textarea
                             placeholder='Enter Description'
@@ -111,7 +111,7 @@ const CategoryFormModal = ({ open, onClose, category, onSuccess }: Props) => {
                     </div>
 
                 </form>
-                <div>
+                <div className='modal-button-group'>
                     <button
                         style={{ marginRight: "10px" }}
                         className='action-button-secondary'

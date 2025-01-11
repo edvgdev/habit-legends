@@ -108,7 +108,7 @@ const UserPlanFormModal = ({ open, onClose, userPlan, onSuccess }: Props) => {
             <div className='modal-content'>
                 <h2>{userPlan ? 'Edit User Plan' : 'Create New User Plan'}</h2>
                 <form>
-                    <div>
+                    <div className='modal-content-form'>
                         <label>User Plan Name:</label>
                         <input
                             type="text"
@@ -118,7 +118,7 @@ const UserPlanFormModal = ({ open, onClose, userPlan, onSuccess }: Props) => {
                             onChange={(e) => setName(e.target.value)}
                         />
                     </div>
-                    <div>
+                    <div className='modal-content-form'>
                         <label>Description:</label>
                         <textarea
                             placeholder='Enter Description'
@@ -127,7 +127,7 @@ const UserPlanFormModal = ({ open, onClose, userPlan, onSuccess }: Props) => {
                             onChange={(e) => setDescription(e.target.value)}
                         />
                     </div>
-                    <div>
+                    <div className='modal-content-form'>
                         <label>Price:</label>
                         <div className='price-input'>
                             <span>$</span>
@@ -140,7 +140,7 @@ const UserPlanFormModal = ({ open, onClose, userPlan, onSuccess }: Props) => {
                             />
                         </div>
                     </div>
-                    <div>
+                    <div className='modal-content-form'>
                         <label>Experience Multiplier:</label>
                         <input
                             type='number'
@@ -150,7 +150,7 @@ const UserPlanFormModal = ({ open, onClose, userPlan, onSuccess }: Props) => {
                             onChange={(e) => setExpMultiplier(e.target.value ? parseFloat(e.target.value) : 0.00)}
                         />
                     </div>
-                    <div>
+                    <div className='modal-content-form'>
                         <label>Stat Point Multiplier:</label>
                         <input
                             type='number'
@@ -162,7 +162,7 @@ const UserPlanFormModal = ({ open, onClose, userPlan, onSuccess }: Props) => {
                     </div>
 
                 </form>
-                <div>
+                <div className='modal-button-group'>
                     <button
                         style={{ marginRight: "10px" }}
                         className='action-button-secondary'

@@ -47,6 +47,17 @@ public class HabitStatRewardServiceImpl implements HabitStatRewardService {
     }
 
     @Override
+    public List<HabitStatRewardDTO> getHabitStatRewardsByHabitId(Long id) {
+        // Retrieve the HabitStatRewards by habitId
+        List<HabitStatReward> habitStatRewards = habitStatRewardRepository.findByHabitId(id);
+
+        // Map each HabitStatReward entity to HabitStatRewardDTO using ModelMapper
+        return habitStatRewards.stream()
+                .map(habitStatReward -> modelMapper.map(habitStatReward, HabitStatRewardDTO.class))
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public List<HabitStatRewardDTO> getAllHabitStatRewards() {
         return habitStatRewardRepository.findAll()
                 .stream()
