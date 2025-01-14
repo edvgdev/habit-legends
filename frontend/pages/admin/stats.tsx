@@ -1,7 +1,7 @@
 import StatFormModal from '@/components/admin/stats/stat-form-modal';
 import StatTable from '@/components/admin/stats/stat-table';
 import ConfirmationModal from '@/components/confirmation-modal';
-import { deleteStat, getStats } from '@/services/api';
+import { deleteStat, getStats } from '@/api/api';
 import { Stat } from '@/types/stat';
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'

@@ -1,4 +1,4 @@
-import { createHabit, getCategories, getStats, updateHabit } from '@/services/api';
+import { createHabit, getCategories, getStats, updateHabit } from '@/api/api';
 import { Category } from '@/types/category';
 import { Habit, HabitAndStatRewards, HabitDetails } from '@/types/habit';
 import { Stat, StatReward } from '@/types/stat';

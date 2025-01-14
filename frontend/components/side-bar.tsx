@@ -1,3 +1,4 @@
+import { logout } from '@/api/auth';
 import Link from 'next/link';
 import { useRouter } from 'next/router'
 import React from 'react'
@@ -5,6 +6,7 @@ import React from 'react'
 const SideBar = () => {
 
     const router = useRouter();
+
 
     const menus = [
         { name: "Daily Quests", path: "/daily-quest" },
@@ -54,6 +56,10 @@ const SideBar = () => {
                                 <Link href={menu.path}>{menu.name}</Link>
                             </li>
                         ))}
+                        <li
+                        >
+                            <Link href="/" onClick={logout}>Logout</Link>
+                        </li>
                         {/* <li > <a href="#">Daily Quests</a></li>
                         <li > <a href="#"> Quests Overview</a></li>
                         <li > <a href="#">Admin</a></li>

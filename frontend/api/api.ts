@@ -3,11 +3,9 @@ import { HabitAndStatRewards, HabitDetails } from "@/types/habit";
 import { Rank } from "@/types/Rank";
 import { Stat } from "@/types/stat";
 import { UserPlan } from "@/types/user-plan";
+import api from "@/utils/axios-helper";
 import axios, { AxiosInstance, AxiosResponse } from "axios";
 
-const api: AxiosInstance = axios.create({
-    baseURL: "/api/"
-});
 
 // Categories
 

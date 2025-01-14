@@ -1,4 +1,4 @@
-import { createStat, updateStat } from '@/services/api';
+import { createStat, updateStat } from '@/api/api';
 import app from '@/services/firebase-config';
 import { Stat } from '@/types/stat';
 import { deletePhoto, uploadPhotoToFirebase } from '@/utils/firebase-storage';

@@ -1,7 +1,7 @@
 import CategoryFormModal from '@/components/admin/categories/category-form-modal';
 import CategoryTable from '@/components/admin/categories/category-table';
 import ConfirmationModal from '@/components/confirmation-modal';
-import { deleteCategory, getCategories } from '@/services/api';
+import { deleteCategory, getCategories } from '@/api/api';
 import { Category } from '@/types/category';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react'

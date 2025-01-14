@@ -1,4 +1,4 @@
-import { createCategory, updateCategory } from '@/services/api';
+import { createCategory, updateCategory } from '@/api/api';
 import { Category } from '@/types/category';
 import React, { useEffect, useState } from 'react';
 import Modal from 'react-modal';

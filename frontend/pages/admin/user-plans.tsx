@@ -1,7 +1,7 @@
 import UserPlanFormModal from '@/components/admin/userPlans/user-plan-form-modal';
 import UserPlanTable from '@/components/admin/userPlans/user-plan-table';
 import ConfirmationModal from '@/components/confirmation-modal';
-import { deleteUserPlan, getUserPlans } from '@/services/api';
+import { deleteUserPlan, getUserPlans } from '@/api/api';
 import { UserPlan } from '@/types/user-plan';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react'

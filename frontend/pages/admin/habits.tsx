@@ -1,7 +1,7 @@
 import HabitFormModal from '@/components/admin/habits/habit-form-modal';
 import HabitTable from '@/components/admin/habits/habit-table';
 import ConfirmationModal from '@/components/confirmation-modal';
-import { deleteHabit, getHabits } from '@/services/api';
+import { deleteHabit, getHabits } from '@/api/api';
 import { Habit, HabitDetails } from '@/types/habit';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react'

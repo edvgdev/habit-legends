@@ -1,6 +1,12 @@
 package com.habitlegends.habitlegends.entity;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.List;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -15,37 +21,33 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "user")
-public class User {
+public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "oauth_id", length = 255)
-    private String oauthId;
+    @Column(name = "last_name", length = 50, nullable = false)
+    private String lastName;
 
-    @Column(name = "oauth_provider", length = 50)
-    private String oauthProvider;
+    @Column(name = "first_name", length = 50, nullable = false)
+    private String firstName;
 
-    @Column(name = "username", length = 50, nullable = false, unique = true)
-    private String username;
-    
     @Column(name = "email", length = 100, nullable = false, unique = true)
     private String email;
 
-    @Column(name = "password_hash", length = 255)
-    private String passwordHash;
+    @Column(name = "password", length = 255)
+    private String password;
 
     @Column(name = "profile_picture", length = 255)
     private String profilePictureLink;
 
     @ManyToOne
-    @JoinColumn(name = "plan_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "plan_id", referencedColumnName = "id")
     private UserPlan userPlan;
 
-    @ManyToOne
-    @JoinColumn(name = "role_id", referencedColumnName = "id", nullable = false)
-    private Role role;
+    @Column(name = "role")
+    private String role;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -57,6 +59,9 @@ public class User {
     public void prePersist() {
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
+        if (this.role == null) {
+            this.role = "USER";
+        }
     }
 
     @PreUpdate
@@ -72,28 +77,20 @@ public class User {
         this.id = id;
     }
 
-    public String getOauthId() {
-        return oauthId;
+    public String getLastName() {
+        return lastName;
     }
 
-    public void setOauthId(String oauthId) {
-        this.oauthId = oauthId;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
-    public String getOauthProvider() {
-        return oauthProvider;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setOauthProvider(String oauthProvider) {
-        this.oauthProvider = oauthProvider;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
     public String getEmail() {
@@ -104,12 +101,12 @@ public class User {
         this.email = email;
     }
 
-    public String getPasswordHash() {
-        return passwordHash;
+    public String getPassword() {
+        return password;
     }
 
-    public void setPasswordHash(String passwordHash) {
-        this.passwordHash = passwordHash;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getProfilePictureLink() {
@@ -128,14 +125,6 @@ public class User {
         this.userPlan = userPlan;
     }
 
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
-    }
-
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
@@ -152,5 +141,42 @@ public class User {
         this.updatedAt = updatedAt;
     }
 
-    
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority(role));
+    }
+
+    @Override
+    public String getUsername() {
+        return this.email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
 }

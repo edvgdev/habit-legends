@@ -1,7 +1,7 @@
 import RankFormModal from '@/components/admin/ranks/rank-form-modal';
 import RankTable from '@/components/admin/ranks/rank-table';
 import ConfirmationModal from '@/components/confirmation-modal';
-import { deleteRank, getRanks } from '@/services/api';
+import { deleteRank, getRanks } from '@/api/api';
 import { Rank } from '@/types/Rank';
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'

@@ -2,32 +2,68 @@ package com.habitlegends.habitlegends.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import com.habitlegends.habitlegends.service.CustomUserDetailsService;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        // Configure the HTTP security to disable CSRF and allow all requests
-        http
-                .authorizeHttpRequests(auth -> auth
-                        .anyRequest().permitAll() // Allow all requests for now
-                )
-                .csrf(csrf -> csrf.disable()) // Disable CSRF explicitly
-                .httpBasic(httpBasic -> httpBasic.disable()); // Disable HTTP Basic Authentication
+        private final CustomUserDetailsService customUserDetailsService;
+        private final JwtAuthFilter jwtAuthFilter;
 
-        return http.build();
-    }
+        public SecurityConfig(CustomUserDetailsService customUserDetailsService, JwtAuthFilter jwtAuthFilter) {
+                this.customUserDetailsService = customUserDetailsService;
+                this.jwtAuthFilter = jwtAuthFilter;
+        }
 
-    // This method ensures that Spring Security doesn't apply security to static
-    // resources
-    @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().requestMatchers("/**");
-    }
+        @Bean
+        public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+                httpSecurity.csrf(AbstractHttpConfigurer::disable)
+                                .cors(Customizer.withDefaults())
+                                .authorizeHttpRequests(request -> request
+                                                .requestMatchers("/api/auth/**", "/api/public/**")
+                                                .permitAll()
+                                                .requestMatchers("/api/admin/**").hasAnyAuthority("ADMIN")
+                                                .requestMatchers("/api/user/**").hasAnyAuthority("USER")
+                                                .requestMatchers("/api/adminuser/**").hasAnyAuthority("ADMIN", "USER")
+                                                .anyRequest().authenticated())
+                                .sessionManagement(manager -> manager
+                                                .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                                .authenticationProvider(authenticationProvider()).addFilterBefore(
+                                                jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+                return httpSecurity.build();
+        }
+
+        @Bean
+        public AuthenticationProvider authenticationProvider() {
+                DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
+                daoAuthenticationProvider.setUserDetailsService(customUserDetailsService);
+                daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
+                return daoAuthenticationProvider;
+        }
+
+        @Bean
+        public PasswordEncoder passwordEncoder() {
+                return new BCryptPasswordEncoder();
+        }
+
+        @Bean
+        public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
+                        throws Exception {
+                return authenticationConfiguration.getAuthenticationManager();
+        }
 }
