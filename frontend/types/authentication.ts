@@ -18,7 +18,7 @@ export interface RegistrationRequest {
     password: string;
 }
 
-export interface RegistrationResponse {
+export interface AuthResponse {
     statusCode: number;
     message: string;
 }

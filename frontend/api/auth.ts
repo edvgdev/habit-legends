@@ -1,25 +1,21 @@
-import { LoginRequest, RegistrationRequest, RegistrationResponse, TokenResponse } from "@/types/authentication";
+import { LoginRequest, RegistrationRequest, AuthResponse, TokenResponse } from "@/types/authentication";
 import api from "@/utils/axios-helper";
+import publicApi from "@/utils/public-api-helper";
 import { AxiosResponse } from "axios";
 
-export const login = async (loginRequest: LoginRequest): Promise<TokenResponse> => {
+export const loginAuth = async (loginRequest: LoginRequest): Promise<AuthResponse> => {
 
     try {
-        const response: AxiosResponse<TokenResponse> = await api.post("/auth/login", loginRequest);
-
-        if (response.data.token) {
-            localStorage.setItem("accessToken", response.data.token);
-            localStorage.setItem("refreshToken", response.data.refreshToken);
-        }
+        const response: AxiosResponse<AuthResponse> = await api.post("/auth/login", loginRequest);
         return response.data;
     } catch (error: any) {
-        throw new Error(error.response?.data?.message || "Failed to login");
+        throw new Error(error.response?.status || "Failed to login");
     }
 }
 
-export const register = async (registrationRequest: RegistrationRequest): Promise<RegistrationResponse> => {
+export const register = async (registrationRequest: RegistrationRequest): Promise<AuthResponse> => {
     try {
-        const response: AxiosResponse<RegistrationResponse> = await api.post("/auth/register", registrationRequest);
+        const response: AxiosResponse<AuthResponse> = await api.post("/auth/register", registrationRequest);
         return response.data
     } catch (error: any) {
         throw new Error(error.response?.data?.message || "Failed to register");
@@ -41,3 +37,21 @@ export const checkEmailAvailability = async (email: string): Promise<boolean> =>
         return false; // If API call fails, assume email exists
     }
 };
+
+export const isUserAuthenticated = async (): Promise<boolean> => {
+    try {
+        const response: AxiosResponse<boolean> = await api.get('/auth/is-authenticated/');
+        return response.data;
+    } catch (error) {
+        console.log("it catches error");
+        return false; // If API call fails, assume email exists
+    }
+};
+
+export const logoutUser = async (): Promise<void> => {
+    try {
+        await api.post("/auth/logout")
+    } catch (error) {
+        console.error("Logout failed");
+    }
+}

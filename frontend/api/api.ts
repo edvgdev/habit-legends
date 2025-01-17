@@ -207,6 +207,15 @@ export const deleteHabit = async (id: number): Promise<void> => {
     }
 };
 
+export const getUserProfile = async (): Promise<any> => {
+    try {
+        const response: AxiosResponse = await api.get("user/profile");
+        return response.data;
+    } catch (error: any) {
+        console.error(error)
+    }
+};
+
 
 
 

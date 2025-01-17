@@ -1,15 +1,18 @@
-import { login } from '@/api/auth';
+import { useAuth } from '@/context/auth-context';
 import { LoginRequest } from '@/types/authentication';
 import { useRouter } from 'next/router'
 import React, { useState } from 'react'
 
 const Login = () => {
 
+    const { login, googleLogin } = useAuth();
+
     const router = useRouter();
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -18,16 +21,19 @@ const Login = () => {
             password
         };
 
-
-        const response = await login(loginCredentials);
-        if (response.statusCode == 200) {
-            router.push("/")
-        } else {
-            setError('Invalid email or password');
+        try {
+            await login(loginCredentials);
+        } catch (error) {
+            setError("Invalid email or password");
         }
 
     }
 
+
+    const handleGoogleLogin = (e: React.FormEvent) => {
+        e.preventDefault();
+        googleLogin();
+    }
 
 
     return (
@@ -66,7 +72,10 @@ const Login = () => {
                 >
                     Login via Email
                 </button>
-                <button className='auth-oauth-button' style={{ width: "100%", marginBottom: "4rem" }} >
+                <button
+                    className='auth-oauth-button'
+                    onClick={handleGoogleLogin}
+                    style={{ width: "100%", marginBottom: "4rem" }} >
                     <span>
                         <img
                             src="/google.png" // Replace with your profile image URL

@@ -1,11 +1,18 @@
-import { logout } from '@/api/auth';
+
+import { useAuth } from '@/context/auth-context';
+import useUserStore from '@/types/user';
 import Link from 'next/link';
 import { useRouter } from 'next/router'
 import React from 'react'
 
 const SideBar = () => {
 
+    const { logout } = useAuth();
+
     const router = useRouter();
+
+    const { userProfile } = useUserStore();
+
 
 
     const menus = [
@@ -22,7 +29,7 @@ const SideBar = () => {
                 <div className="profile-summary">
                     <div className="profile-summary-image">
                         <img
-                            src="/profile.jpg" // Replace with your profile image URL
+                            src={userProfile ? userProfile.profilePictureLink : "/profile.jpg"} // Replace with your profile image URL
                             alt="Profile"
                         />
                     </div>
