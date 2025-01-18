@@ -1,4 +1,4 @@
-import { createRank, updateRank } from '@/services/api';
+import { createRank, updateRank } from '@/api/api';
 import { Rank } from '@/types/Rank';
 import React, { useEffect, useState } from 'react';
 import Modal from 'react-modal';

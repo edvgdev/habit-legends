@@ -1,10 +1,19 @@
+
+import { useAuth } from '@/context/auth-context';
+import useUserStore from '@/types/user';
 import Link from 'next/link';
 import { useRouter } from 'next/router'
 import React from 'react'
 
 const SideBar = () => {
 
+    const { logout } = useAuth();
+
     const router = useRouter();
+
+    const { userProfile } = useUserStore();
+
+
 
     const menus = [
         { name: "Daily Quests", path: "/daily-quest" },
@@ -20,7 +29,7 @@ const SideBar = () => {
                 <div className="profile-summary">
                     <div className="profile-summary-image">
                         <img
-                            src="/profile.jpg" // Replace with your profile image URL
+                            src={userProfile ? userProfile.profilePictureLink : "/profile.jpg"} // Replace with your profile image URL
                             alt="Profile"
                         />
                     </div>
@@ -54,6 +63,10 @@ const SideBar = () => {
                                 <Link href={menu.path}>{menu.name}</Link>
                             </li>
                         ))}
+                        <li
+                        >
+                            <Link href="/" onClick={logout}>Logout</Link>
+                        </li>
                         {/* <li > <a href="#">Daily Quests</a></li>
                         <li > <a href="#"> Quests Overview</a></li>
                         <li > <a href="#">Admin</a></li>

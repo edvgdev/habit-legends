@@ -1,4 +1,4 @@
-import { createUserPlan, updateUserPlan } from '@/services/api';
+import { createUserPlan, updateUserPlan } from '@/api/api';
 import { UserPlan } from '@/types/user-plan';
 import React, { useEffect, useState } from 'react';
 import Modal from 'react-modal';

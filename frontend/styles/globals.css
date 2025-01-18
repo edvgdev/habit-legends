@@ -26,6 +26,8 @@ body {
 
 /* Main layout */
 
+
+
 .main-layout {
   display: flex;
   padding: 1.5rem 2rem;
@@ -43,6 +45,108 @@ body {
   flex-grow: 1;
   max-width: calc(100% - 300px);
   height: 100%;
+}
+
+.auth-layout {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1.5rem 2rem;
+  height: 97vh;
+}
+
+
+.auth-content {
+  background-color: #181F30;
+  padding: 2rem 4rem;
+  border-radius: 1.5rem;
+  min-width: 600px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.auth-content h2 {
+  margin-bottom: 50px;
+}
+
+
+.auth-content-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+}
+
+.auth-content label {
+  color: #fff;
+}
+
+.auth-content label.error {
+  color: red;
+}
+
+.auth-content p {
+  color: #fff;
+}
+
+.auth-content p.error {
+  color: red;
+}
+
+.auth-content input {
+  width: 94%;
+  padding: 1rem;
+  background-color: transparent;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  color: #fff;
+  font-size: 1.5rem;
+}
+
+.auth-content input.error {
+  border: 1px solid red;
+}
+
+.auth-undecorated-button {
+  background-color: transparent;
+  border: none;
+  color: white;
+  font-size: 1rem;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+
+.auth-undecorated-button:hover {
+  color: #0BBD8B;
+}
+
+.auth-oauth-button {
+  background-color: transparent;
+  border: 1px solid white;
+  border-radius: 1rem;
+  font-size: 1.25rem;
+  color: white;
+  padding: 0 2rem;
+  height: 60px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 
@@ -223,6 +327,7 @@ body {
   cursor: pointer;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
 }
 
@@ -267,6 +372,15 @@ body {
 
 .modal-content h2 {
   margin-bottom: 50px;
+}
+
+.modal-content-message {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
 }
 
 
