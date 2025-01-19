@@ -2,14 +2,14 @@ import { useAuth } from "@/context/auth-context";
 import { poppins } from "@/utils/fonts";
 import { useRouter } from "next/router";
 import SideBar from "./side-bar";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { getUserProfile } from "@/api/api";
 import useUserStore from "@/types/user";
 
 const AppContent = ({ Component, pageProps, isAuthPage }: { Component: any; pageProps: any; isAuthPage: boolean }) => {
 
     const router = useRouter();
-    const { isAuthenticated } = useAuth();
+    const { isAuthenticated } = useUserStore();
 
     // Render a loading state while authentication is being checked
     if (isAuthenticated === null) {
@@ -20,6 +20,7 @@ const AppContent = ({ Component, pageProps, isAuthPage }: { Component: any; page
     useEffect(() => {
         if (isAuthenticated === false && !isAuthPage) {
             router.push("/login");
+        } else {
         }
     }, [isAuthenticated, isAuthPage, router]);
 

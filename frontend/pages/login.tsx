@@ -38,7 +38,11 @@ const Login = () => {
 
     return (
         <div className='auth-content'>
-            <h2>Welcome to Questlyf! </h2>
+            <div className='auth-title'>
+                <img src='qlogo.png' />
+                <h2>Welcome to Questlyf! </h2>
+                <p>Level up your life with daily quests</p>
+            </div>
             <form>
                 <div className='auth-content-form'>
                     <label>Email:</label>
@@ -50,7 +54,7 @@ const Login = () => {
                         onChange={(e) => setEmail(e.target.value)}
                     />
                 </div>
-                <div style={{ marginBottom: "5rem" }} className='auth-content-form'>
+                <div style={{ marginBottom: "2rem" }} className='auth-content-form'>
                     <label>Password:</label>
                     <input
                         type="password"
@@ -75,7 +79,7 @@ const Login = () => {
                 <button
                     className='auth-oauth-button'
                     onClick={handleGoogleLogin}
-                    style={{ width: "100%", marginBottom: "4rem" }} >
+                    style={{ width: "100%", marginBottom: "2rem" }} >
                     <span>
                         <img
                             src="/google.png" // Replace with your profile image URL
