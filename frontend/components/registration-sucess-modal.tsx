@@ -1,5 +1,4 @@
 import { CircularProgress } from '@mui/material';
-import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 import Modal from 'react-modal';
 

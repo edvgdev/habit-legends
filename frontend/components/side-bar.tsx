@@ -5,15 +5,18 @@ import { orbitron } from '@/utils/fonts';
 import Link from 'next/link';
 import { useRouter } from 'next/router'
 import React, { useState } from 'react'
-import { FaAngleLeft, FaAngleRight, FaArrowLeft, FaBars, FaCog, FaList, FaSignOutAlt, FaTasks, FaUserCog } from 'react-icons/fa';
+import { FaAngleLeft, FaAngleRight, FaCog, FaList, FaSignOutAlt, FaTasks, FaUserCog } from 'react-icons/fa';
 
-const SideBar = () => {
+interface Props {
+    isSidebarExpanded: boolean;
+    toggleSidebar: () => void;
+}
+
+const SideBar = ({ isSidebarExpanded, toggleSidebar }: Props) => {
 
     const { logout } = useAuth();
     const router = useRouter();
     const { userProfile } = useUserStore();
-
-    const [isSidebarExpanded, setIsSidebarExpanded] = useState(true);
 
     const menus = [
         { name: "Daily Quests", path: "/daily-quest", icon: <FaTasks /> },
@@ -22,9 +25,6 @@ const SideBar = () => {
         { name: "Settings", path: "/settings", icon: <FaCog /> },
     ];
 
-    const toggleSidebar = () => {
-        setIsSidebarExpanded(!isSidebarExpanded);
-    };
 
     return (
         (
