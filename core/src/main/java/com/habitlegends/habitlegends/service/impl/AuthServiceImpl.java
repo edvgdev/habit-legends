@@ -2,7 +2,6 @@ package com.habitlegends.habitlegends.service.impl;
 
 import java.util.HashMap;
 
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;

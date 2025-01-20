@@ -5,16 +5,71 @@ import { useRouter } from 'next/router'
 import React, { useState } from 'react'
 import { FaCheck, FaEye, FaEyeSlash, FaSpinner, FaTimes } from 'react-icons/fa';
 import { toast, ToastContainer } from 'react-toastify';
+import * as yup from 'yup';
+import { useForm, Controller } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { Button, IconButton, InputAdornment, TextField, Typography } from '@mui/material';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { debounce } from 'lodash';
+
+const schema = yup.object().shape({
+    firstName: yup.string().required('First name is required'),
+    lastName: yup.string().required('Last name is required'),
+    email: yup.string().email('Invalid email').required('Email is required'),
+    password: yup.string()
+        .required('Password is required')
+        .matches(
+            /^(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/,
+            'Password must be at least 8 characters, contain at least one number, and one special character'
+        ),
+    confirmPassword: yup.string()
+        .oneOf([yup.ref('password'), undefined], 'Passwords must match')
+        .required('Confirm password is required'),
+});
+
+const iconButtonStyles = {
+    color: 'white', // White color for the icon
+    '&:hover': {
+        backgroundColor: '#0BBD8B', // Light background on hover
+    },
+};
+
+const inputStyle = {
+    mb: 2,
+    '& .MuiOutlinedInput-root': {
+        '& fieldset': {
+            borderColor: 'white', // White outline for normal state
+        },
+        '&:hover fieldset': {
+            borderColor: 'white', // White outline on hover
+        },
+        '&.Mui-focused fieldset': {
+            borderColor: '#0BBD8B', // Green outline for focused state
+        },
+        '&.Mui-error fieldset': {
+            borderColor: 'red', // Red outline for error state
+        },
+    },
+    '& .MuiInputLabel-root': {
+        color: 'white', // White label text
+    },
+    '& .MuiInputLabel-root.Mui-focused': {
+        color: '#0BBD8B', // Green label text when focused
+    },
+    '& .MuiInputLabel-root.Mui-error': {
+        color: 'red', // Red label text when in error state
+    },
+    '& .MuiOutlinedInput-input': {
+        color: 'white', // White text color
+    },
+    '& .MuiFormHelperText-root': {
+        color: 'red', // Red error message text
+    },
+}
 
 const Register = () => {
 
     const router = useRouter();
-
-    const [firstName, setFirstName] = useState('');
-    const [lastName, setLastName] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
 
     const [isEmailValid, setIsEmailValid] = useState<boolean | null>(null); // State to track if email is valid
     const [isCheckingEmail, setIsCheckingEmail] = useState(false);
@@ -22,13 +77,11 @@ const Register = () => {
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
     const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
 
-    const [emailError, setEmailError] = useState(false);
-    const [passwordError, setPasswordError] = useState(false);
-    const [confirmPasswordError, setConfirmPasswordError] = useState(false);
-    const [firstNameError, setFirstNameError] = useState(false);
-    const [lastNameError, setLastNameError] = useState(false);
-
     const [successModalOpen, setSuccessModalOpen] = useState(false);
+
+    const { control, handleSubmit, formState: { errors }, setError, clearErrors, trigger } = useForm({
+        resolver: yupResolver(schema),
+    });
 
     const handleSuccessModalClose = () => {
         setSuccessModalOpen(false);
@@ -36,267 +89,217 @@ const Register = () => {
     }
 
 
-    const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setEmail(e.target.value);
-        setIsEmailValid(null); // Reset status while typing
-    };
+    const onSubmit = async (data: RegistrationRequest) => {
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
+        // Trigger Yup validation for all fields
+        const isValid = await trigger();
 
-        const registrationRequest: RegistrationRequest = {
-            firstName,
-            lastName,
-            email,
-            password
+        // If there are Yup validation errors, stop the submission process
+        if (!isValid) {
+            toast.error('Please fix the form errors');
+            return;
         }
 
+        // Validate the email field and check if it's valid
+        const isEmailValid = await validateEmail(data.email);
 
-        const response = await register(registrationRequest);
-        if (response.statusCode == 200) {
+        // If the email is invalid, stop the submission process
+        if (!isEmailValid) {
+            toast.error('Please fix the email field errors');
+            return;
+        }
+        const response = await register(data);
+        if (response.statusCode === 200) {
             setSuccessModalOpen(true);
         } else {
             toast.error(response.message);
         }
-    }
+    };
 
-    const validateEmail = async () => {
+    const validateEmail = async (email: string) => {
         if (!email) {
-            setEmailError(true);
-            return;
+            setError('email', { type: 'manual', message: 'Email is required' });
+            return false; // Email is invalid
         }
         setIsCheckingEmail(true);
         setIsEmailValid(null);
         try {
-            const emailExists = await checkEmailAvailability(email); // Replace with actual API call
+            const emailExists = await checkEmailAvailability(email);
             setIsEmailValid(emailExists);
-            setEmailError(!emailExists);
+            if (!emailExists) {
+                setError('email', { type: 'manual', message: 'Email is already taken' });
+                return false; // Email is invalid
+            } else {
+                clearErrors('email'); // Clear the error if the email is available
+                return true; // Email is valid
+            }
         } catch (error) {
             console.error(error);
+            setError('email', { type: 'manual', message: 'An error occurred while validating the email' });
+            return false; // Email is invalid
         } finally {
             setIsCheckingEmail(false);
         }
     };
 
-    const togglePasswordVisibility = () => {
-        setIsPasswordVisible(!isPasswordVisible);
-    };
-
-    const toggleConfirmPasswordVisibility = () => {
-        setIsConfirmPasswordVisible(!isConfirmPasswordVisible);
-    };
-
-    const validateFirstName = () => {
-        setFirstNameError(firstName.trim() === '');
-    };
-
-    const validateLastName = () => {
-        setLastNameError(lastName.trim() === '');
-    };
-
-    const validatePassword = () => {
-        const passwordRegex = /^(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
-        setPasswordError(password.trim() === '' || !passwordRegex.test(password));
-    };
-
-    const validateConfirmPassword = () => {
-        setConfirmPasswordError(confirmPassword.trim() === '' || confirmPassword !== password);
-    };
-
-    // Disable submit button if there are validation errors
-    const isFormValid = !emailError && !passwordError && !confirmPasswordError
-        && !firstNameError && !lastNameError && email && password
-        && confirmPassword && firstName && lastName;
+    const debouncedValidateEmail = debounce(validateEmail, 2000);
 
     return (
         <div className='auth-content'>
-            <h2>Welcome to Questlyf! </h2>
-            <form>
-                <div className='auth-content-form'>
-                    <label className={firstNameError ? 'error' : ''}>First Name:</label>
-                    <input
-                        type="text"
-                        placeholder='Enter first name'
-                        required
-                        value={firstName}
-                        onChange={(e) => setFirstName(e.target.value)}
-                        className={firstNameError ? 'error' : ''}
-                        onBlur={validateFirstName}
-                    />
-                </div>
-                <div className='auth-content-form'>
-                    <label className={lastNameError ? 'error' : ''}>Last name:</label>
-                    <input
-                        type="text"
-                        placeholder='Enter last name'
-                        required
-                        value={lastName}
-                        onChange={(e) => setLastName(e.target.value)}
-                        className={lastNameError ? 'error' : ''}
-                        onBlur={validateLastName}
-                    />
-                </div>
-                <div className='auth-content-form'>
-                    <label className={emailError ? 'error' : ''}>Email:</label>
-                    <div style={{ position: 'relative', marginBottom: '20px' }}>
-                        <input
-                            type="email"
-                            placeholder='Enter email address'
-                            onBlur={validateEmail}
-                            required
-                            value={email}
-                            onChange={handleEmailChange}
-                            className={emailError ? 'error' : ''}
+            <div className='auth-title'>
+                <img src='qlogo.png' />
+                <h2>Welcome to Questlyf! </h2>
+                <p>Level up your life with daily quests</p>
+            </div>
+            <form onSubmit={handleSubmit(onSubmit)}>
+                <Controller
+                    name='firstName'
+                    control={control}
+                    defaultValue=''
+                    render={({ field }) => (
+                        <TextField
+                            {...field}
+                            label='First Name'
+                            fullWidth
+                            margin='normal'
+                            error={!!errors.firstName}
+                            helperText={errors.firstName?.message}
+                            sx={inputStyle}
                         />
-                        <div
-                            style={{
-                                position: 'absolute',
-                                right: '20px',
-                                top: '60%',
-                                transform: 'translateY(-50%)',
-                                pointerEvents: 'none', // Prevent interfering with input
-                            }}
-                        >
-                            {email &&
-                                (isCheckingEmail ? (
-                                    <FaSpinner className="spinner" />
-                                ) : isEmailValid === true ? (
-                                    <FaCheck style={{ color: 'green' }} />
-                                ) : isEmailValid === false ? (
-                                    <FaTimes style={{ color: 'red' }} />
-                                ) : null)}
-                        </div>
-                    </div>
-                </div>
-                <div className='auth-content-form'>
-                    <label className={passwordError ? 'error' : ''}>Password:</label>
-                    <div style={{ position: "relative" }}>
-                        <input
-                            type={isPasswordVisible ? "text" : "password"}
-                            placeholder='Enter password'
-                            required
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            className={passwordError ? 'error' : ''}
-                            onBlur={validatePassword}
+                    )}
+                />
+                <Controller
+                    name='lastName'
+                    control={control}
+                    defaultValue=''
+                    render={({ field }) => (
+                        <TextField
+                            {...field}
+                            label='Last Name'
+                            fullWidth
+                            margin='normal'
+                            error={!!errors.lastName}
+                            helperText={errors.lastName?.message}
+                            sx={inputStyle}
                         />
-                        <div
-                            style={{
-                                position: "absolute",
-                                right: "20px",
-                                top: "55%",
-                                width: "2rem",
-                                transform: "translateY(-50%)",
-                                pointerEvents: "auto",
-                                display: "flex",
-                                justifyContent: "center",
-                                alignItems: "center"
+                    )}
+                />
+                <Controller
+                    name='email'
+                    control={control}
+                    defaultValue=''
+                    render={({ field }) => (
+                        <TextField
+                            {...field}
+                            label='Email'
+                            fullWidth
+                            margin='normal'
+                            error={!!errors.email}
+                            helperText={errors.email?.message}
+                            onChange={(e) => {
+                                field.onChange(e); // Update the field value
+                                debouncedValidateEmail(e.target.value); // Trigger debounced validation
                             }}
-                        >
-                            {password && (
-                                <div
-                                    style={{ cursor: "pointer" }}
-                                    onClick={togglePasswordVisibility}
-                                >
-                                    {isPasswordVisible ? (
-                                        <FaEyeSlash style={{
-                                            color: "#fff",
-                                            fontSize: "2rem",
-                                        }} />
-                                    ) : (
-                                        <FaEye style={{
-                                            color: "#fff",
-                                            fontSize: "2rem",
-                                        }} />
-                                    )}
-                                </div>
-                            )}
-                        </div>
-                    </div>
-                    {passwordError && (<p className='error'> Password must be atleast 8 characters,
-                        must contain atleast one number, <br />and one special character </p>)}
-                </div>
-                <div className='auth-content-form'>
-                    <label className={confirmPasswordError ? 'error' : ''}>Confirm Password:</label>
-                    <div style={{ position: "relative" }}>
-                        <input
-                            type={isConfirmPasswordVisible ? "text" : "password"}
-                            placeholder='Confirm password'
-                            required
-                            value={confirmPassword}
-                            onChange={(e) => setConfirmPassword(e.target.value)}
-                            className={confirmPasswordError ? 'error' : ''}
-                            onBlur={validateConfirmPassword}
+                            slotProps={{
+                                input: {
+                                    endAdornment: (
+                                        <IconButton>
+                                            {isCheckingEmail ? (
+                                                <FaSpinner className='spinner' />
+                                            ) : isEmailValid === true ? (
+                                                <FaCheck style={{ color: 'green' }} />
+                                            ) : isEmailValid === false ? (
+                                                <FaTimes style={{ color: 'red' }} />
+                                            ) : null}
+                                        </IconButton>
+                                    ),
+                                },
+                            }}
+                            sx={inputStyle}
                         />
-                        <div
-                            style={{
-                                position: "absolute",
-                                right: "20px",
-                                top: "55%",
-                                width: "2rem",
-                                transform: "translateY(-50%)",
-                                pointerEvents: "auto",
-                                display: "flex",
-                                justifyContent: "center",
-                                alignItems: "center"
+                    )}
+                />
+                <Controller
+                    name='password'
+                    control={control}
+                    defaultValue=''
+                    render={({ field }) => (
+                        <TextField
+                            {...field}
+                            label='Password'
+                            type={isPasswordVisible ? 'text' : 'password'}
+                            fullWidth
+                            margin='normal'
+                            error={!!errors.password}
+                            helperText={errors.password?.message}
+                            slotProps={{
+                                input: {
+                                    endAdornment: (
+                                        <IconButton
+                                            onClick={() => setIsPasswordVisible(!isPasswordVisible)}
+                                            sx={iconButtonStyles}>
+                                            {isPasswordVisible ? <VisibilityOff /> : <Visibility />}
+                                        </IconButton>
+                                    ),
+                                },
                             }}
-                        >
-                            {confirmPassword && (
-                                <div
-                                    style={{ cursor: "pointer" }}
-                                    onClick={toggleConfirmPasswordVisibility}
-                                >
-                                    {isConfirmPasswordVisible ? (
-                                        <FaEyeSlash style={{
-                                            color: "#fff",
-                                            fontSize: "2rem",
-                                        }} />
-                                    ) : (
-                                        <FaEye style={{
-                                            color: "#fff",
-                                            fontSize: "2rem",
-                                        }} />
-                                    )}
-                                </div>
-                            )}
-                        </div>
-                    </div>
-                    {confirmPasswordError && (<p className='error'> Passwords does not match </p>)}
-                </div>
-
-                <button
+                            sx={inputStyle}
+                        />
+                    )}
+                />
+                <Controller
+                    name='confirmPassword'
+                    control={control}
+                    defaultValue=''
+                    render={({ field }) => (
+                        <TextField
+                            {...field}
+                            label='Confirm Password'
+                            type={isConfirmPasswordVisible ? 'text' : 'password'}
+                            fullWidth
+                            margin='normal'
+                            error={!!errors.confirmPassword}
+                            helperText={errors.confirmPassword?.message}
+                            slotProps={{
+                                input: {
+                                    endAdornment: (
+                                        <IconButton
+                                            onClick={() => setIsConfirmPasswordVisible(!isConfirmPasswordVisible)}
+                                            sx={iconButtonStyles}>
+                                            {isPasswordVisible ? <VisibilityOff /> : <Visibility />}
+                                        </IconButton>
+                                    ),
+                                },
+                            }}
+                            sx={inputStyle}
+                        />
+                    )}
+                />
+                <Button
                     type='submit'
-                    className='action-button-primary'
-                    style={{ width: "100%", marginBottom: "1rem" }}
-                    disabled={!isFormValid}
-                    onClick={handleSubmit}
+                    variant='contained'
+                    fullWidth
+                    sx={{ mb: 1.5, backgroundColor: "#0BBD8B" }}
                 >
                     Register
-                </button>
-                <button
-                    className='auth-oauth-button'
-                    style={{ width: "100%", marginBottom: "4rem" }}
+                </Button>
+                <Button
+                    variant='outlined'
+                    fullWidth
+                    sx={{ mb: 4, borderColor: "#0BBD8B", color: "#0BBD8B" }}
+                    startIcon={<img src='/google.png' alt='Google' style={{ width: '25px' }} />}
                 >
-                    <span>
-                        <img
-                            src="/google.png"
-                            alt="Profile"
-                            style={{ width: "25px" }}
-                        />
-                    </span>  Login via Google
-                </button>
-                <p>Already have an account?
-                    <span>
-                        <button
-                            className='auth-undecorated-button'
-                            onClick={() => {
-                                router.push("/login");
-                            }}
-                        >
-                            Login
-                        </button>
-                    </span>
-                </p>
+                    Login via Google
+                </Button>
+                <Typography variant='body2' sx={{ color: '#fff' }}>
+                    Already have an account?{' '}
+                    <Button
+                        onClick={() => router.push('/login')}
+                        sx={{ textDecoration: 'underline', color: 'white' }}
+                    >
+                        Login
+                    </Button>
+                </Typography>
             </form>
             <RegistrationSuccessModal
                 isOpen={successModalOpen}

@@ -67,7 +67,6 @@ const Admin = () => {
 
     const navigateToSubpage = (subpage: string) => {
         router.push(`/admin?subpage=${subpage}`);
-        //, undefined, { shallow: true }
     };
 
     return (
@@ -75,6 +74,7 @@ const Admin = () => {
             <div className='admin-container'>
                 {renderContent()}
             </div>
+
         </div>
     )
 }

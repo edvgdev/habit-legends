@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.habitlegends.habitlegends.details.HabitAndStatRewardsDetails;
 import com.habitlegends.habitlegends.details.HabitDetails;
-import com.habitlegends.habitlegends.dto.HabitDTO;
 import com.habitlegends.habitlegends.service.HabitService;
 
 @RestController

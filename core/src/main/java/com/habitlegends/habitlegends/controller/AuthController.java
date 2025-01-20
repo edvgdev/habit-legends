@@ -59,7 +59,7 @@ public class AuthController {
     }
 
     @GetMapping("/is-email-existing/{email}")
-    public ResponseEntity<Boolean> isEmailAlreadyRegistered(@PathVariable String email) {
+    public ResponseEntity<Boolean> isEmailAlreadyRegistered(@PathVariable("email") String email) {
         return ResponseEntity.ok().body(authService.isEmailAlreadyRegistered(email));
     }
 

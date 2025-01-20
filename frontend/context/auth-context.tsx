@@ -1,12 +1,12 @@
 import { getUserProfile } from '@/api/api';
 import { isUserAuthenticated, loginAuth, logoutUser } from '@/api/auth';
+import LoadingModal from '@/components/loading-modal';
 import { LoginRequest } from "@/types/authentication";
 import useUserStore, { UserProfile } from "@/types/user";
 import { useRouter } from "next/router";
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 
 interface AuthContextType {
-    isAuthenticated: boolean;
     login: (credentials: any) => Promise<void>;
     logout: () => void;
     googleLogin: () => void;
@@ -15,17 +15,20 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const { userProfile, setUserProfile, clearUserProfile } = useUserStore();
+    const { userProfile, setUserProfile, clearUserProfile, isAuthenticated, setIsAuthenticated } = useUserStore();
     const router = useRouter();
+    const isInitialRender = useRef(true);
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         const checkAuth = async () => {
+            if (isInitialRender.current) {
+                isInitialRender.current = false; // Skip the initial render
+                return;
+            }
             try {
                 if (isAuthenticated === false && !userProfile) {
                     // If not authenticated, clear the user profile and redirect to login
-                    clearUserProfile();
-                    setIsAuthenticated(false);
                     console.log("not auth");
                     console.log(userProfile);
 
@@ -35,13 +38,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                 } else {
                     // If authenticated, fetch the full user profile
                     console.log("authenticated");
-                    setIsAuthenticated(true);
                     console.log(userProfile);
                 }
             } catch (error) {
                 // If the check fails, clear the user profile and redirect to login
                 clearUserProfile();
-                setIsAuthenticated(false);
 
                 if (router.pathname !== "/login" && router.pathname !== "/register") {
                     router.push("/login");
@@ -49,24 +50,40 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             }
         };
 
-        // Check for OAuth2 success
-        const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.get('login') === 'success') {
-            getCurrentUser(); // Fetch the user profile
-            setIsAuthenticated(true);
-            window.history.replaceState({}, document.title, window.location.pathname);
-        }
+        const checkUrlParams = async () => {
 
+            // Check for OAuth2 success
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('login') === 'success') {
+                setIsLoading(true);
+                await getCurrentUser(); // Fetch the user profile
+                setIsAuthenticated(true);
+                window.history.replaceState({}, document.title, window.location.pathname);
+                setTimeout(() => {
+                    setIsLoading(false);
+                }, 1000);
+
+            }
+
+        }
         checkAuth();
+        checkUrlParams();
     }, [router, isAuthenticated, userProfile]);
 
     // Login function
     const login = async (credentials: LoginRequest) => {
-        const response = await loginAuth(credentials); // Replace with your login API call
-        if (response.statusCode === 200) {
-            setIsAuthenticated(true);
-            getCurrentUser();
-            router.push("/");
+        setIsLoading(true);
+        try {
+            const response = await loginAuth(credentials); // Replace with your login API call
+            if (response.statusCode === 200) {
+                setIsAuthenticated(true);
+                await getCurrentUser();
+                setTimeout(() => {
+                    setIsLoading(false);
+                }, 1000);
+            }
+        } catch (error) {
+            console.error("Login failed:", error);
         }
     };
 
@@ -74,7 +91,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         const profile = await getUserProfile();
         setUserProfile(profile);
         if (!profile) {
+            router.push("/login");
+        } else {
             router.push("/");
+            setIsAuthenticated(true);
         }
     }
 
@@ -87,12 +107,18 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         await logoutUser();
         clearUserProfile();
         setIsAuthenticated(false);
+        localStorage.removeItem("user-storage");
         router.push("/login");
     };
 
+
     return (
-        <AuthContext.Provider value={{ isAuthenticated, login, logout, googleLogin }}>
+        <AuthContext.Provider value={{ login, logout, googleLogin }}>
             {children}
+            <LoadingModal
+                isOpen={isLoading} // Control modal visibility
+                onClose={() => setIsLoading(false)} // Close the modal
+            />
         </AuthContext.Provider>
     );
 };

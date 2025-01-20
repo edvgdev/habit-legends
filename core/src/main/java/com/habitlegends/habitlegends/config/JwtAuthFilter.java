@@ -33,11 +33,10 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
 
         // Skip JWT processing for permitted endpoints
-        if (request.getRequestURI().startsWith("/api/auth/")) {
+        if (request.getRequestURI().matches("/api/auth/.*")) {
             filterChain.doFilter(request, response);
             return;
         }
-
         // Extract the access token from the cookie
         String accessToken = null;
         if (request.getCookies() != null) {

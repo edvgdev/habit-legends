@@ -1,35 +1,51 @@
 
 import { useAuth } from '@/context/auth-context';
 import useUserStore from '@/types/user';
+import { orbitron } from '@/utils/fonts';
 import Link from 'next/link';
 import { useRouter } from 'next/router'
-import React from 'react'
+import React, { useState } from 'react'
+import { FaAngleLeft, FaAngleRight, FaCog, FaList, FaSignOutAlt, FaTasks, FaUserCog } from 'react-icons/fa';
 
-const SideBar = () => {
+interface Props {
+    isSidebarExpanded: boolean;
+    toggleSidebar: () => void;
+}
+
+const SideBar = ({ isSidebarExpanded, toggleSidebar }: Props) => {
 
     const { logout } = useAuth();
-
     const router = useRouter();
-
     const { userProfile } = useUserStore();
 
-
-
     const menus = [
-        { name: "Daily Quests", path: "/daily-quest" },
-        { name: "Quests Overview", path: "/quests-overview" },
-        { name: "Admin", path: "/admin" },
-        { name: "Settings", path: "/settings" },
+        { name: "Daily Quests", path: "/daily-quest", icon: <FaTasks /> },
+        { name: "Quests Overview", path: "/quests-overview", icon: <FaList /> },
+        { name: "Admin", path: "/admin", icon: <FaUserCog /> },
+        { name: "Settings", path: "/settings", icon: <FaCog /> },
     ];
+
 
     return (
         (
-            <div className="side-bar">
+            <div className={`side-bar ${isSidebarExpanded ? 'expanded' : 'minimized'}`}>
+                <div className='app-title'>
+
+                    {!isSidebarExpanded ? (<img
+                        src='/qlogo.png'
+                    />) : null}
+                    <h2 className={`${orbitron.className}`}>Questlyf</h2>
+                    <button
+                        className='toggle-sidebar'
+                        onClick={toggleSidebar}>
+                        {isSidebarExpanded ? <FaAngleLeft /> : <FaAngleRight />}
+                    </button>
+                </div>
                 {/* Profile Section */}
                 <div className="profile-summary">
                     <div className="profile-summary-image">
                         <img
-                            src={userProfile ? userProfile.profilePictureLink : "/profile.jpg"} // Replace with your profile image URL
+                            src={userProfile?.profilePictureLink ? userProfile.profilePictureLink : "/profile.jpg"} // Replace with your profile image URL
                             alt="Profile"
                         />
                     </div>
@@ -37,7 +53,7 @@ const SideBar = () => {
                     <div className='profile-summary-details'>
                         {/* Profile Details */}
                         <div className='profile-summary-info'>
-                            <h2>John Doe</h2>
+                            <h2>{`${userProfile?.firstName} ${userProfile?.lastName} `}</h2>
                             <p >E-Rank</p>
                             <p >Lvl. 3</p>
                         </div>
@@ -60,17 +76,33 @@ const SideBar = () => {
                                 key={menu.name}
                                 className={router.pathname === menu.path ? "active-menu" : ""}
                             >
-                                <Link href={menu.path}>{menu.name}</Link>
+                                <Link href={menu.path}>
+                                    <div className="menu-item-container">
+                                        <span className="menu-icon">{menu.icon}</span>
+                                        {!isSidebarExpanded && (
+                                            <span className="tooltip">{menu.name}</span>
+                                        )}
+                                        {isSidebarExpanded && (
+                                            <span className="menu-text">{menu.name}</span>
+                                        )}
+                                    </div>
+                                </Link>
                             </li>
                         ))}
                         <li
                         >
-                            <Link href="/" onClick={logout}>Logout</Link>
+                            <Link href="/" onClick={logout}>
+                                <div className="menu-item-container">
+                                    <span className="menu-icon"><FaSignOutAlt /></span>
+                                    {!isSidebarExpanded && (
+                                        <span className="tooltip">Logout</span>
+                                    )}
+                                    {isSidebarExpanded && (
+                                        <span className="menu-text">Logout</span>
+                                    )}
+                                </div>
+                            </Link>
                         </li>
-                        {/* <li > <a href="#">Daily Quests</a></li>
-                        <li > <a href="#"> Quests Overview</a></li>
-                        <li > <a href="#">Admin</a></li>
-                        <li > <a href="#">Settings</a></li> */}
                     </ul>
                 </div>
             </div>

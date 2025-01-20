@@ -1,26 +1,13 @@
-import { CircularProgress } from '@mui/material';
-import React, { useEffect } from 'react';
+import React from 'react';
 import Modal from 'react-modal';
+
 
 interface Props {
     isOpen: boolean;
     onClose: () => void;
 }
 
-const RegistrationSuccessModal = ({ isOpen, onClose }: Props) => {
-
-
-    useEffect(() => {
-        if (isOpen) {
-            const timer = setTimeout(() => {
-                onClose(); // Close the modal
-            }, 5000);
-
-            // Clean up the timer on component unmount
-            return () => clearTimeout(timer);
-        }
-    }, [isOpen, onClose]);
-
+const LoadingModal = ({ isOpen, onClose }: Props) => {
     return (
         <Modal
             isOpen={isOpen}
@@ -32,7 +19,7 @@ const RegistrationSuccessModal = ({ isOpen, onClose }: Props) => {
                     display: "flex",
                     justifyContent: "center",
                     alignItems: "center",
-                    zIndex: '1'
+                    zIndex: '30'
                 },
                 content: {
                     width: "auto",
@@ -46,17 +33,16 @@ const RegistrationSuccessModal = ({ isOpen, onClose }: Props) => {
                 },
             }}
         >
-            <div className='modal-content'>
-                <div className='modal-content-message'>
-                    <h2>Welcome to Questlyf!</h2>
-                    <p>You have successfully registered an account. You can now start leveling up your life.
-                        <br /> Navigating to the login page...
-                    </p>
-                    <CircularProgress />
+            <div className='loading-modal-content'>
+                <div className='loading-modal-content-message'>
+                    <h2>Loading..</h2>
+                    <img src='/infinity.svg' />
                 </div>
             </div>
+
         </Modal>
+
     )
 }
 
-export default RegistrationSuccessModal
+export default LoadingModal
