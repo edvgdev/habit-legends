@@ -74,7 +74,7 @@ const SideBar = ({ isSidebarExpanded, toggleSidebar }: Props) => {
                         {menus.map((menu) => (
                             <li
                                 key={menu.name}
-                                className={router.pathname === menu.path ? "active-menu" : ""}
+                                className={router.pathname.startsWith(menu.path) ? "active-menu" : ""}
                             >
                                 <Link href={menu.path}>
                                     <div className="menu-item-container">

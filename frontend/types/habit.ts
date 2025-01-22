@@ -30,3 +30,15 @@ export interface HabitStatReward {
     createdAt: string | null;
     updatedAt: string | null;
 };
+
+export interface UserHabitDetails {
+    userId: number | null;
+    habitDetails: HabitDetails;
+};
+
+export interface UserHabit {
+    id: number;
+    userId: number;
+    habitId: number;
+    createdAt: string;
+}

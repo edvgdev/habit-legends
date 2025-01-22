@@ -1,5 +1,5 @@
 import { Category } from "@/types/category";
-import { HabitAndStatRewards, HabitDetails } from "@/types/habit";
+import { HabitAndStatRewards, HabitDetails, UserHabit, UserHabitDetails } from "@/types/habit";
 import { Rank } from "@/types/Rank";
 import { Stat } from "@/types/stat";
 import { UserPlan } from "@/types/user-plan";
@@ -216,6 +216,23 @@ export const getUserProfile = async (): Promise<any> => {
     }
 };
 
+export const addQuestToUser = async (userHabit: UserHabitDetails): Promise<UserHabit> => {
+    try {
+        const response: AxiosResponse<UserHabit> = await api.post("user-habit", userHabit);
+        return response.data;
+    } catch (error: any) {
+        console.error(error);
+        throw new Error("Failed to add quest");
+    }
+};
 
-
+export const getAllUserQuests = async (userId: number): Promise<UserHabitDetails[]> => {
+    try {
+        const response: AxiosResponse<UserHabitDetails[]> = await api.get(`user-habit/all-details/${userId}`);
+        return response.data;
+    } catch (error) {
+        console.error(error);
+        throw new Error("Failed to retrieve quests");
+    }
+}
 

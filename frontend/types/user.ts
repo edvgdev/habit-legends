@@ -9,7 +9,8 @@ export interface UserProfile {
     profilePictureLink: string;
     planId: number | null;
     role: string;
-}
+};
+
 
 interface UserStore {
     userProfile: UserProfile | null;
