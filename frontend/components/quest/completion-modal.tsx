@@ -63,6 +63,10 @@ const CompletionModal = ({ open, onClose, quest, onSuccess, userId }: Props) => 
                     right: "auto",
                     bottom: "auto",
                     transform: "translate(-50%, -50%)",
+                    border: "none",
+                    background: "none",
+                    borderRadius: "0",
+                    boxShadow: "2px 2px 24px 1px rgba(0, 0, 0, 0.31)"
                 }
             }}
         >

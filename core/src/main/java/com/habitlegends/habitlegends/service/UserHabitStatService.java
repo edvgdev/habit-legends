@@ -2,6 +2,7 @@ package com.habitlegends.habitlegends.service;
 
 import java.util.List;
 
+import com.habitlegends.habitlegends.details.UserStatDetails;
 import com.habitlegends.habitlegends.dto.UserHabitStatDTO;
 
 public interface UserHabitStatService {
@@ -18,4 +19,6 @@ public interface UserHabitStatService {
     List<UserHabitStatDTO> initializeUserHabitStatForNewUser(Long userId);
 
     void addPoints(Long userId, Long habitId);
+
+    List<UserStatDetails> getAllUserStatByUser(Long userId);
 }

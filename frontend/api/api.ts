@@ -2,7 +2,7 @@ import { Category } from "@/types/category";
 import { HabitAndStatRewards, HabitCompletion, HabitDetails, UserHabit, UserHabitDetails } from "@/types/habit";
 import { Rank } from "@/types/Rank";
 import { Stat } from "@/types/stat";
-import { UserProgressDetails } from "@/types/user";
+import { UserProgressDetails, UserStatDetails } from "@/types/user";
 import { UserPlan } from "@/types/user-plan";
 import api from "@/utils/axios-helper";
 import axios, { AxiosInstance, AxiosResponse } from "axios";
@@ -245,7 +245,7 @@ export const getAllUserQuests = async (userId: number): Promise<UserHabitDetails
         console.error(error);
         throw new Error("Failed to retrieve quests");
     }
-}
+};
 
 export const submitQuestCompletion = async (completion: HabitCompletion): Promise<HabitCompletion> => {
     try {
@@ -255,7 +255,7 @@ export const submitQuestCompletion = async (completion: HabitCompletion): Promis
         console.error(error);
         throw new Error("Failed to save quest completion");
     }
-}
+};
 
 export const getAllQuestCompletion = async (userId: number): Promise<HabitCompletion[]> => {
     try {
@@ -265,7 +265,7 @@ export const getAllQuestCompletion = async (userId: number): Promise<HabitComple
         console.error(error);
         throw new Error("Failed to retrieve quest completion");
     }
-}
+};
 
 export const getAllQuestCompletionToday = async (userId: number): Promise<HabitCompletion[]> => {
     try {
@@ -275,4 +275,14 @@ export const getAllQuestCompletionToday = async (userId: number): Promise<HabitC
         console.error(error);
         throw new Error("Failed to retrieve quest completion");
     }
-}
+};
+
+export const getAllUserStatsByUser = async (userId: number): Promise<UserStatDetails[]> => {
+    try {
+        const response: AxiosResponse<UserStatDetails[]> = await api.get(`user-habit-stat/all-user-stat/${userId}`);
+        return response.data;
+    } catch (error) {
+        console.error(error);
+        throw new Error("Failed to retrieve user stats");
+    }
+};

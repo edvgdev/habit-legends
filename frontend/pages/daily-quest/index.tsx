@@ -82,13 +82,10 @@ const DailyQuest = () => {
             setUserQuests(quests);
             setStats(stats);
             setUserQuestCompletions(completions);
-            console.log(completions);
         } catch (error) {
             console.error(error);
         }
     }
-
-    console.log(userQuests);
 
     return (
         <div className='daily-quests'>

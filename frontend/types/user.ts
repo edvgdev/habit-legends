@@ -20,6 +20,13 @@ export interface UserProgressDetails {
     expRequiredForNextLevel: number;
 }
 
+export interface UserStatDetails {
+    userId: number;
+    statName: string;
+    currentPoints: number;
+    iconUrl: string;
+}
+
 
 interface UserStore {
     userProfile: UserProfile | null;

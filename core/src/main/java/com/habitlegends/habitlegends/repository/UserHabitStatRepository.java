@@ -1,5 +1,6 @@
 package com.habitlegends.habitlegends.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,4 +13,8 @@ public interface UserHabitStatRepository extends JpaRepository<UserHabitStat, Lo
 
     @Query("SELECT uhs FROM UserHabitStat uhs WHERE uhs.user.id = :userId AND uhs.stat.id = :statId")
     Optional<UserHabitStat> findByUserIdAndStatId(@Param("userId") Long userId, @Param("statId") Integer statId);
+
+    @Query("SELECT uhs FROM UserHabitStat uhs WHERE uhs.user.id = :userId")
+    List<UserHabitStat> findByUserId(@Param("userId") Long userId);
+
 }

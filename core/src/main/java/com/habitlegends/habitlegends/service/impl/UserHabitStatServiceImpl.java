@@ -1,12 +1,17 @@
 package com.habitlegends.habitlegends.service.impl;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import com.habitlegends.habitlegends.details.UserStatDetails;
 import com.habitlegends.habitlegends.dto.HabitStatRewardDTO;
+import com.habitlegends.habitlegends.dto.StatDTO;
 import com.habitlegends.habitlegends.dto.UserHabitStatDTO;
 import com.habitlegends.habitlegends.entity.HabitStatReward;
 import com.habitlegends.habitlegends.entity.Stat;
@@ -105,6 +110,28 @@ public class UserHabitStatServiceImpl implements UserHabitStatService {
         return userHabitStatRepository.findAll()
                 .stream()
                 .map(userHabitStat -> modelMapper.map(userHabitStat, UserHabitStatDTO.class))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<UserStatDetails> getAllUserStatByUser(Long userId) {
+        List<StatDTO> allStats = statService.getAllStatsDto();
+        List<UserHabitStat> userHabitStats = userHabitStatRepository.findByUserId(userId);
+
+        Map<Long, UserHabitStat> userHabitStatMap = userHabitStats.stream()
+                .collect(Collectors.toMap(
+                        userHabitStat -> (long) userHabitStat.getStat().getId(),
+                        Function.identity()));
+
+        return allStats.stream()
+                .map(stat -> {
+                    UserHabitStat userHabitStat = userHabitStatMap.get((long) stat.getId());
+                    return new UserStatDetails(
+                            userId,
+                            stat.getName(),
+                            userHabitStat != null ? userHabitStat.getCurrentPoints() : 0,
+                            stat.getIcon());
+                })
                 .collect(Collectors.toList());
     }
 
