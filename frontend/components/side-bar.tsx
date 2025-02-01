@@ -16,7 +16,7 @@ const SideBar = ({ isSidebarExpanded, toggleSidebar }: Props) => {
 
     const { logout } = useAuth();
     const router = useRouter();
-    const { userProfile } = useUserStore();
+    const { userProfile, userProgressDetails } = useUserStore();
 
     const menus = [
         { name: "Daily Quests", path: "/daily-quest", icon: <FaTasks /> },
@@ -54,8 +54,8 @@ const SideBar = ({ isSidebarExpanded, toggleSidebar }: Props) => {
                         {/* Profile Details */}
                         <div className='profile-summary-info'>
                             <h2>{`${userProfile?.firstName} ${userProfile?.lastName} `}</h2>
-                            <p >E-Rank</p>
-                            <p >Lvl. 3</p>
+                            <p >{`${userProgressDetails?.rank}-Rank`}</p>
+                            <p >{`Lvl. ${userProgressDetails?.level}`}</p>
                         </div>
                         {/* Progress Bar */}
                         <div className="profile-summary-progress-container">

@@ -13,6 +13,7 @@ import com.habitlegends.habitlegends.entity.HabitCompletion;
 import com.habitlegends.habitlegends.repository.HabitCompletionRepository;
 import com.habitlegends.habitlegends.service.HabitCompletionService;
 import com.habitlegends.habitlegends.service.HabitService;
+import com.habitlegends.habitlegends.service.UserHabitStatService;
 import com.habitlegends.habitlegends.service.UserProgressService;
 import com.habitlegends.habitlegends.service.UserService;
 
@@ -27,14 +28,18 @@ public class HabitCompletionServiceImpl implements HabitCompletionService {
 
     private final UserProgressService userProgressService;
 
+    private final UserHabitStatService userHabitStatService;
+
     private final ModelMapper modelMapper;
 
     public HabitCompletionServiceImpl(HabitCompletionRepository habitCompletionRepository, UserService userService,
-            HabitService habitService, UserProgressService userProgressService, ModelMapper modelMapper) {
+            HabitService habitService, UserProgressService userProgressService,
+            UserHabitStatService userHabitStatService, ModelMapper modelMapper) {
         this.habitCompletionRepository = habitCompletionRepository;
         this.userService = userService;
         this.habitService = habitService;
         this.userProgressService = userProgressService;
+        this.userHabitStatService = userHabitStatService;
         this.modelMapper = modelMapper;
     }
 
@@ -45,6 +50,7 @@ public class HabitCompletionServiceImpl implements HabitCompletionService {
         HabitCompletion savedHabitCompletion = habitCompletionRepository.save(habitCompletion);
         userProgressService.triggerProgressUpdateOnCompletion(savedHabitCompletion.getUser().getId(),
                 savedHabitCompletion.getExpEarned());
+        userHabitStatService.addPoints(habitCompletionDTO.getUserId(), habitCompletionDTO.getHabitId());
         return modelMapper.map(savedHabitCompletion, HabitCompletionDTO.class);
     }
 

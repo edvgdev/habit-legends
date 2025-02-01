@@ -1,6 +1,8 @@
 package com.habitlegends.habitlegends.service;
 
 import java.util.List;
+
+import com.habitlegends.habitlegends.details.UserProgressDetails;
 import com.habitlegends.habitlegends.dto.UserProgressDTO;
 
 public interface UserProgressService {
@@ -17,4 +19,6 @@ public interface UserProgressService {
     UserProgressDTO getUserProgressByUserId(Long userId);
 
     void triggerProgressUpdateOnCompletion(Long userId, Integer expEarned);
+
+    UserProgressDetails getUserProgressDetails(Long userId);
 }

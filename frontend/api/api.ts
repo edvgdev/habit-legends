@@ -2,6 +2,7 @@ import { Category } from "@/types/category";
 import { HabitAndStatRewards, HabitCompletion, HabitDetails, UserHabit, UserHabitDetails } from "@/types/habit";
 import { Rank } from "@/types/Rank";
 import { Stat } from "@/types/stat";
+import { UserProgressDetails } from "@/types/user";
 import { UserPlan } from "@/types/user-plan";
 import api from "@/utils/axios-helper";
 import axios, { AxiosInstance, AxiosResponse } from "axios";
@@ -215,6 +216,16 @@ export const getUserProfile = async (): Promise<any> => {
         console.error(error)
     }
 };
+
+export const getUserProgressDetails = async (userId: number): Promise<UserProgressDetails> => {
+    try {
+        const response: AxiosResponse<UserProgressDetails> = await api.get(`user-progress/details/${userId}`);
+        return response.data;
+    } catch (error) {
+        console.error(error);
+        throw new Error("Failed to retrieve progress");
+    }
+}
 
 export const addQuestToUser = async (userHabit: UserHabitDetails): Promise<UserHabit> => {
     try {

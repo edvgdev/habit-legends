@@ -37,7 +37,7 @@ public class StatController {
 
     @GetMapping("/all")
     public ResponseEntity<List<StatDTO>> getAllStats() {
-        return ResponseEntity.ok(statService.getAllStats());
+        return ResponseEntity.ok(statService.getAllStatsDto());
     }
 
     @PutMapping("/{id}")

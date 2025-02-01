@@ -47,11 +47,16 @@ public class StatServiceImpl implements StatService {
     }
 
     @Override
-    public List<StatDTO> getAllStats() {
+    public List<StatDTO> getAllStatsDto() {
         return statRepository.findAll()
                 .stream()
                 .map(stat -> modelMapper.map(stat, StatDTO.class))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Stat> getAllStats() {
+        return statRepository.findAll();
     }
 
     @Override

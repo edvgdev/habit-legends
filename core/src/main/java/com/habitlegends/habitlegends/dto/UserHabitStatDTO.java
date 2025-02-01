@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 public class UserHabitStatDTO {
 
     private Long id;
-    private Long userHabitId;
+    private Long userId;
     private Integer statId;
     private Integer currentPoints;
     private LocalDateTime createdAt;
@@ -13,11 +13,11 @@ public class UserHabitStatDTO {
 
     public UserHabitStatDTO() {
     }
-    
-    public UserHabitStatDTO(Long id, Long userHabitId, Integer statId, Integer currentPoints, LocalDateTime createdAt,
+
+    public UserHabitStatDTO(Long id, Long userId, Integer statId, Integer currentPoints, LocalDateTime createdAt,
             LocalDateTime updatedAt) {
         this.id = id;
-        this.userHabitId = userHabitId;
+        this.userId = userId;
         this.statId = statId;
         this.currentPoints = currentPoints;
         this.createdAt = createdAt;
@@ -32,12 +32,12 @@ public class UserHabitStatDTO {
         this.id = id;
     }
 
-    public Long getUserHabitId() {
-        return userHabitId;
+    public Long getUserId() {
+        return userId;
     }
 
-    public void setUserHabitId(Long userHabitId) {
-        this.userHabitId = userHabitId;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     public Integer getStatId() {
@@ -72,6 +72,4 @@ public class UserHabitStatDTO {
         this.updatedAt = updatedAt;
     }
 
-    
-    
 }

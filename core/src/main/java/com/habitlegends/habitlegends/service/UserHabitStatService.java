@@ -14,4 +14,8 @@ public interface UserHabitStatService {
     UserHabitStatDTO updateUserHabitStat(Long id, UserHabitStatDTO userHabitStatDTO);
 
     void deleteUserHabitStat(Long id);
+
+    List<UserHabitStatDTO> initializeUserHabitStatForNewUser(Long userId);
+
+    void addPoints(Long userId, Long habitId);
 }

@@ -3,9 +3,12 @@ package com.habitlegends.habitlegends.service.impl;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.hibernate.sql.ast.tree.expression.Over;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.habitlegends.habitlegends.details.UserProgressDetails;
 import com.habitlegends.habitlegends.dto.RankDTO;
 import com.habitlegends.habitlegends.dto.UserProgressDTO;
 import com.habitlegends.habitlegends.entity.Rank;
@@ -107,6 +110,22 @@ public class UserProgressServiceImpl implements UserProgressService {
 
         // Transfer to logger in the future
         System.out.println(updatedUserProgress);
+    }
+
+    @Override
+    public UserProgressDetails getUserProgressDetails(Long userId) {
+        UserProgressDTO userProgressDTO = getUserProgressByUserId(userId);
+        RankDTO rank = rankService.getRankById(userProgressDTO.getRankId());
+
+        UserProgressDetails userProgressDetails = new UserProgressDetails();
+        userProgressDetails.setUserId(userId);
+        userProgressDetails.setLevel(userProgressDTO.getLevel());
+        userProgressDetails.setExp(userProgressDTO.getExp());
+        userProgressDetails.setRank(rank.getName());
+        userProgressDetails.setMinExpToNextRank(rank.getMinExp());
+        userProgressDetails.setExpRequiredForNextLevel(getExpRequiredForNextLevel(userProgressDTO.getLevel()));
+
+        return userProgressDetails;
     }
 
     private UserProgress prepareDtoToSave(UserProgressDTO userProgressDTO) {
