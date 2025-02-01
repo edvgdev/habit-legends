@@ -1,6 +1,7 @@
 package com.habitlegends.habitlegends.service.impl;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
@@ -60,6 +61,27 @@ public class RankServiceImpl implements RankService {
             throw new RuntimeException("Rank not found");
         }
         rankRepository.deleteById(id);
+    }
+
+    @Override
+    public Optional<RankDTO> determineRank(Integer exp) {
+        if (exp == null || exp < 0) {
+            throw new IllegalArgumentException("Experience must be a non-negative integer.");
+        }
+
+        List<Rank> ranks = rankRepository.findAllByOrderByMinExpAsc();
+
+        // Iterate through ranks to find the appropriate one
+        Rank determinedRank = null;
+        for (Rank rank : ranks) {
+            if (exp >= rank.getMinExp()) {
+                determinedRank = rank;
+            } else {
+                break; // Stop when exp is less than minExp
+            }
+        }
+
+        return Optional.ofNullable(modelMapper.map(determinedRank, RankDTO.class));
     }
 
 }

@@ -1,12 +1,14 @@
-import { getAllUserQuests, getStats } from '@/api/api';
+import { getAllQuestCompletion, getAllQuestCompletionToday, getAllUserQuests, getStats } from '@/api/api';
 import UserQuestCard from '@/components/quest/user-quest-card';
-import { HabitDetails, UserHabitDetails } from '@/types/habit';
+import { HabitCompletion, HabitDetails, UserHabitDetails } from '@/types/habit';
 import { Stat, StatNameAndReward } from '@/types/stat';
 import useUserStore from '@/types/user';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react'
 import { FaPlus, FaTimes } from 'react-icons/fa';
 import dayjs from 'dayjs';
+import CompletionModal from '@/components/quest/completion-modal';
+import { ToastContainer } from 'react-toastify';
 
 const DailyQuest = () => {
 
@@ -16,16 +18,31 @@ const DailyQuest = () => {
     const [userQuests, setUserQuests] = useState<UserHabitDetails[]>([]);
     const [selectedQuest, setSelectedQuest] = useState<UserHabitDetails | null>();
     const [selectedQuestRewards, setSelectedQuestRewards] = useState<StatNameAndReward[]>([]);
+    const [userQuestCompletions, setUserQuestCompletions] = useState<HabitCompletion[]>([]);
 
     const [stats, setStats] = useState<Stat[]>([]);
 
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+    const [isFormModalOpen, setIsFormModalOpen] = useState(false);
 
     const dateToday = dayjs().format('MMMM D, YYYY');
 
     const navigateToAddPage = () => {
         router.push('/daily-quest/add');
     };
+
+    const openFormModal = () => {
+        setIsFormModalOpen(true);
+    }
+
+    const closeFormModal = () => {
+        setIsFormModalOpen(false);
+    }
+
+    const onCompleteQuest = () => {
+        fetchData();
+        closeDrawer();
+    }
 
     const handleQuestClick = (quest: UserHabitDetails) => {
         setSelectedQuest(quest);
@@ -46,6 +63,10 @@ const DailyQuest = () => {
         }));
     };
 
+    const checkIfCompleted = (habitId: number): boolean => {
+        return userQuestCompletions.some(completion => completion.habitId === habitId);
+    }
+
     useEffect(() => {
         fetchData();
     }, []);
@@ -57,8 +78,11 @@ const DailyQuest = () => {
         try {
             const quests = await getAllUserQuests(userProfile.id);
             const stats = await getStats();
+            const completions = await getAllQuestCompletionToday(userProfile.id);
             setUserQuests(quests);
             setStats(stats);
+            setUserQuestCompletions(completions);
+            console.log(completions);
         } catch (error) {
             console.error(error);
         }
@@ -85,6 +109,7 @@ const DailyQuest = () => {
                                 userQuest={userQuest}
                                 onClick={handleQuestClick}
                                 isSelected={isSelected}
+                                isCompleted={checkIfCompleted(userQuest.habitDetails.habit.id!)}
                             />
                         )
                     })}
@@ -123,9 +148,14 @@ const DailyQuest = () => {
                                     <button
                                         className='action-button-primary'
                                         style={{ height: "40px", padding: "0 2rem" }}
+                                        disabled={checkIfCompleted(selectedQuest?.habitDetails.habit.id!)}
                                         onClick={() => {
+                                            openFormModal();
                                         }}>
-                                        COMPLETE
+                                        {
+                                            checkIfCompleted(selectedQuest?.habitDetails.habit.id!)
+                                                ? 'COMPLETED'
+                                                : 'COMPLETE'}
                                     </button>
                                 </div>
                             </>
@@ -139,6 +169,14 @@ const DailyQuest = () => {
 
                 </div>
             </div>
+            <CompletionModal
+                open={isFormModalOpen}
+                onClose={closeFormModal}
+                quest={selectedQuest}
+                onSuccess={onCompleteQuest}
+                userId={userProfile?.id!}
+            />
+            <ToastContainer position='top-right' autoClose={3000} />
         </div>
     )
 }

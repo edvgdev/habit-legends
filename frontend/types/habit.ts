@@ -41,4 +41,13 @@ export interface UserHabit {
     userId: number;
     habitId: number;
     createdAt: string;
+};
+
+export interface HabitCompletion {
+    id: number | null;
+    userId: number;
+    habitId: number;
+    completedAt: string | null;
+    description: string;
+    expEarned: number;
 }

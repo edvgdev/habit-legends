@@ -5,10 +5,11 @@ interface Props {
     userQuest: UserHabitDetails;
     onClick: (quest: UserHabitDetails) => void;
     isSelected: boolean;
+    isCompleted: boolean;
 }
 
 
-const UserQuestCard = ({ userQuest, onClick, isSelected }: Props) => {
+const UserQuestCard = ({ userQuest, onClick, isSelected, isCompleted }: Props) => {
     return (
         <div
             className={`user-quest-item-card ${isSelected ? 'selected' : ''}`}
@@ -26,7 +27,8 @@ const UserQuestCard = ({ userQuest, onClick, isSelected }: Props) => {
                 </p>
             </div>
             <div className='user-quest-completion'>
-                <img src='/completion.png' />
+                {isCompleted ? (<img src='/completion.png' />) : (<></>)}
+
             </div>
 
         </div>

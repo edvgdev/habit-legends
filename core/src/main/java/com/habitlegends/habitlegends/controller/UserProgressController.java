@@ -40,12 +40,6 @@ public class UserProgressController {
         return ResponseEntity.ok(userProgressService.getAllUserProgress());
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<UserProgressDTO> updateUserProgress(@PathVariable Long id,
-            @RequestBody UserProgressDTO userProgressDTO) {
-        return ResponseEntity.ok(userProgressService.updateUserProgress(id, userProgressDTO));
-    }
-
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUserProgress(@PathVariable Long id) {
         userProgressService.deleteUserProgress(id);

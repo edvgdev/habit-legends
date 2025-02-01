@@ -14,11 +14,13 @@ import org.springframework.security.web.authentication.logout.SecurityContextLog
 import org.springframework.stereotype.Service;
 
 import com.habitlegends.habitlegends.dto.AuthRequestResponseDTO;
+import com.habitlegends.habitlegends.dto.UserProgressDTO;
 import com.habitlegends.habitlegends.entity.User;
 import com.habitlegends.habitlegends.entity.enums.AuthenticationProvider;
 import com.habitlegends.habitlegends.repository.UserRepository;
 import com.habitlegends.habitlegends.service.AuthService;
 import com.habitlegends.habitlegends.service.CustomUserDetailsService;
+import com.habitlegends.habitlegends.service.UserProgressService;
 import com.habitlegends.habitlegends.util.JwtUtils;
 
 import jakarta.servlet.http.Cookie;
@@ -33,14 +35,17 @@ public class AuthServiceImpl implements AuthService {
     private final JwtUtils jwtUtils;
     private final PasswordEncoder passwordEncoder;
     private final CustomUserDetailsService customUserDetailsService;
+    private final UserProgressService userProgressService;
 
     public AuthServiceImpl(UserRepository userRepository, AuthenticationManager authenticationManager,
-            JwtUtils jwtUtils, PasswordEncoder passwordEncoder, CustomUserDetailsService customUserDetailsService) {
+            JwtUtils jwtUtils, PasswordEncoder passwordEncoder, CustomUserDetailsService customUserDetailsService,
+            UserProgressService userProgressService) {
         this.userRepository = userRepository;
         this.authenticationManager = authenticationManager;
         this.jwtUtils = jwtUtils;
         this.passwordEncoder = passwordEncoder;
         this.customUserDetailsService = customUserDetailsService;
+        this.userProgressService = userProgressService;
     }
 
     @Override
@@ -63,6 +68,8 @@ public class AuthServiceImpl implements AuthService {
 
             User savedUser = userRepository.save(user);
             if (savedUser.getId() != null) {
+                UserProgressDTO savUserProgressDTO = createProgressForRegisteredUser(savedUser.getId());
+                System.out.println(savUserProgressDTO);
                 response.setMessage("User created successfully");
                 response.setStatusCode(200);
             }
@@ -145,8 +152,11 @@ public class AuthServiceImpl implements AuthService {
             user.setRole("USER");
             user.setCreatedAt(null);
             user.setUpdatedAt(null);
-            userRepository.save(user);
+            User savedUser = userRepository.save(user);
+            UserProgressDTO savedProgress = createProgressForRegisteredUser(savedUser.getId());
+            System.out.println(savedProgress);
         }
+
         UserDetails userDetails = customUserDetailsService.loadUserByUsername(email);
         String accessToken = jwtUtils.generateToken(userDetails);
         String refreshToken = jwtUtils.generateRefreshToken(new HashMap<>(), user);
@@ -215,6 +225,16 @@ public class AuthServiceImpl implements AuthService {
             }
         }
         return null;
+    }
+
+    private UserProgressDTO createProgressForRegisteredUser(Long userId) {
+        UserProgressDTO userProgressToSave = new UserProgressDTO();
+        userProgressToSave.setUserId(userId);
+        userProgressToSave.setExp(0);
+        userProgressToSave.setLevel(1);
+
+        UserProgressDTO savedProgress = userProgressService.createUserProgress(userProgressToSave);
+        return savedProgress;
     }
 
 }

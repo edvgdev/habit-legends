@@ -12,7 +12,6 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "user_progress")
 public class UserProgress {
-    
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,13 +22,13 @@ public class UserProgress {
     private User user;
 
     @Column(nullable = false, columnDefinition = "INT DEFAULT 1")
-    private Integer level = 1; 
+    private Integer level = 1;
 
     @Column(nullable = false, columnDefinition = "INT DEFAULT 0")
-    private Integer exp = 0; 
+    private Integer exp = 0;
 
     @ManyToOne
-    @JoinColumn(name = "rank_id", nullable = false, referencedColumnName = "id")
+    @JoinColumn(name = "rank_id", referencedColumnName = "id")
     private Rank rank;
 
     public Long getId() {
@@ -70,7 +69,6 @@ public class UserProgress {
 
     public void setRank(Rank rank) {
         this.rank = rank;
-    } 
+    }
 
-    
 }

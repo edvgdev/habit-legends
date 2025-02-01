@@ -10,7 +10,11 @@ public interface UserProgressService {
 
     List<UserProgressDTO> getAllUserProgress();
 
-    UserProgressDTO updateUserProgress(Long id, UserProgressDTO userProgressDTO);
+    UserProgressDTO updateUserProgress(UserProgressDTO userProgressDTO);
 
     void deleteUserProgress(Long id);
+
+    UserProgressDTO getUserProgressByUserId(Long userId);
+
+    void triggerProgressUpdateOnCompletion(Long userId, Integer expEarned);
 }

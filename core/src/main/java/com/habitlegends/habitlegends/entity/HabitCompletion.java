@@ -22,8 +22,12 @@ public class HabitCompletion {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_habit_id", nullable = false)
-    private UserHabit userHabit;
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    @ManyToOne
+    @JoinColumn(name = "habit_id", nullable = false, referencedColumnName = "id")
+    private Habit habit;
 
     @Column(name = "completed_at", nullable = false, updatable = false)
     private LocalDateTime completedAt;
@@ -47,12 +51,20 @@ public class HabitCompletion {
         this.id = id;
     }
 
-    public UserHabit getUserHabit() {
-        return userHabit;
+    public User getUser() {
+        return user;
     }
 
-    public void setUserHabit(UserHabit userHabit) {
-        this.userHabit = userHabit;
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public Habit getHabit() {
+        return habit;
+    }
+
+    public void setHabit(Habit habit) {
+        this.habit = habit;
     }
 
     public LocalDateTime getCompletedAt() {
@@ -79,6 +91,4 @@ public class HabitCompletion {
         this.expEarned = expEarned;
     }
 
-    
-    
 }

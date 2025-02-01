@@ -62,8 +62,7 @@ public class HabitServiceImpl implements HabitService {
         @Override
         public HabitDetails updateHabit(Long id, HabitAndStatRewardsDetails habitAndStatRewardsDetails) {
                 // Retrieve the existing habit from the repository
-                Habit habit = habitRepository.findById(id)
-                                .orElseThrow(() -> new RuntimeException("Habit not found"));
+                Habit habit = getHabitById(id);
 
                 // Map the habit object to the existing habit object
                 modelMapper.map(habitAndStatRewardsDetails.getHabit(), habit);
@@ -125,15 +124,20 @@ public class HabitServiceImpl implements HabitService {
         }
 
         @Override
-        public HabitDTO getHabitById(Long id) {
-                Habit habit = habitRepository.findById(id).orElseThrow(() -> new RuntimeException("Habit not found"));
+        public HabitDTO getHabitDtoById(Long id) {
+                Habit habit = getHabitById(id);
                 return modelMapper.map(habit, HabitDTO.class);
         }
 
         @Override
+        public Habit getHabitById(Long id) {
+                return habitRepository.findById(id).orElseThrow(
+                                () -> new RuntimeException("Habit not found"));
+        }
+
+        @Override
         public HabitDetails getHabitDetailsById(Long id) {
-                Habit habit = habitRepository.findById(id)
-                                .orElseThrow(() -> new RuntimeException("Habit not found"));
+                Habit habit = getHabitById(id);
 
                 // Retrieve stat rewards and category name for the habit
                 List<HabitStatRewardDTO> statRewards = habitStatRewardService.getHabitStatRewardsByHabitId(id);

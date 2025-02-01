@@ -32,7 +32,7 @@ public class HabitCompletionController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<HabitCompletionDTO> getHabitCompletionById(@PathVariable Long id) {
+    public ResponseEntity<HabitCompletionDTO> getHabitCompletionById(@PathVariable("id") Long id) {
         return ResponseEntity.ok(habitCompletionService.getHabitCompletionById(id));
     }
 
@@ -41,14 +41,24 @@ public class HabitCompletionController {
         return ResponseEntity.ok(habitCompletionService.getAllHabitCompletions());
     }
 
+    @GetMapping("/all-user-completed/{id}")
+    public ResponseEntity<List<HabitCompletionDTO>> getAllHabitCompletionsOfUser(@PathVariable("id") Long id) {
+        return ResponseEntity.ok(habitCompletionService.getAllHabitCompletionsOfUser(id));
+    }
+
+    @GetMapping("/all-user-completed-today/{id}")
+    public ResponseEntity<List<HabitCompletionDTO>> getAllHabitCompletionsOfUserToday(@PathVariable("id") Long id) {
+        return ResponseEntity.ok(habitCompletionService.getAllHabitCompletionsOfUserToday(id));
+    }
+
     @PutMapping("/{id}")
-    public ResponseEntity<HabitCompletionDTO> updateHabitCompletion(@PathVariable Long id,
+    public ResponseEntity<HabitCompletionDTO> updateHabitCompletion(@PathVariable("id") Long id,
             @RequestBody HabitCompletionDTO habitCompletionDTO) {
         return ResponseEntity.ok(habitCompletionService.updateHabitCompletion(id, habitCompletionDTO));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteHabitCompletion(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteHabitCompletion(@PathVariable("id") Long id) {
         habitCompletionService.deleteHabitCompletion(id);
         return ResponseEntity.noContent().build();
     }

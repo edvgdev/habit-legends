@@ -1,6 +1,5 @@
 package com.habitlegends.habitlegends.service.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -45,13 +44,7 @@ public class UserHabitServiceImpl implements UserHabitService {
             throw new IllegalArgumentException("UserHabitDetails and HabitDetails must not be null");
         }
 
-        User user = modelMapper.map(userService.getUserById(userHabitDetails.getUserId()), User.class);
-        Habit habit = modelMapper.map(habitService.getHabitById(userHabitDetails.getHabitDetails().getHabit().getId()),
-                Habit.class);
-
-        UserHabit userHabit = new UserHabit();
-        userHabit.setUser(user);
-        userHabit.setHabit(habit);
+        UserHabit userHabit = convertToEntity(userHabitDetails);
 
         UserHabit savedUserHabit = userHabitRepository.save(userHabit);
 
@@ -102,10 +95,21 @@ public class UserHabitServiceImpl implements UserHabitService {
                 userHabitDTO -> {
                     return new UserHabitDetails(
                             userId,
-                            habitService.getHabitDetailsById(userHabitDTO.getId()));
+                            habitService.getHabitDetailsById(userHabitDTO.getHabitId()));
                 }).collect(Collectors.toList());
 
         return userHabitDetailsList;
+    }
+
+    private UserHabit convertToEntity(UserHabitDetails userHabitDetails) {
+        User user = userService.getUserById(userHabitDetails.getUserId());
+        Habit habit = habitService.getHabitById(userHabitDetails.getHabitDetails().getHabit().getId());
+
+        UserHabit userHabit = new UserHabit();
+        userHabit.setUser(user);
+        userHabit.setHabit(habit);
+
+        return userHabit;
     }
 
 }

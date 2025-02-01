@@ -5,6 +5,7 @@ import java.util.List;
 import com.habitlegends.habitlegends.details.HabitAndStatRewardsDetails;
 import com.habitlegends.habitlegends.details.HabitDetails;
 import com.habitlegends.habitlegends.dto.HabitDTO;
+import com.habitlegends.habitlegends.entity.Habit;
 
 public interface HabitService {
     HabitDetails createHabit(HabitAndStatRewardsDetails habitAndStatRewardsDetails);
@@ -13,10 +14,12 @@ public interface HabitService {
 
     List<HabitDetails> getAllHabitDetails();
 
-    HabitDTO getHabitById(Long id);
+    HabitDTO getHabitDtoById(Long id);
 
     HabitDetails updateHabit(Long id, HabitAndStatRewardsDetails habitAndStatRewardsDetails);
 
     void deleteHabit(Long id);
+
+    Habit getHabitById(Long id);
 
 }
