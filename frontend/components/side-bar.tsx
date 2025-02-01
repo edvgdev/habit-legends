@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router'
 import React, { useState } from 'react'
 import { FaAngleLeft, FaAngleRight, FaCog, FaList, FaSignOutAlt, FaTasks, FaUserCog } from 'react-icons/fa';
+import ProfileModal from './profile-modal';
 
 interface Props {
     isSidebarExpanded: boolean;
@@ -16,7 +17,9 @@ const SideBar = ({ isSidebarExpanded, toggleSidebar }: Props) => {
 
     const { logout } = useAuth();
     const router = useRouter();
-    const { userProfile } = useUserStore();
+    const { userProfile, userProgressDetails } = useUserStore();
+
+    const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
 
     const menus = [
         { name: "Daily Quests", path: "/daily-quest", icon: <FaTasks /> },
@@ -24,6 +27,14 @@ const SideBar = ({ isSidebarExpanded, toggleSidebar }: Props) => {
         { name: "Admin", path: "/admin", icon: <FaUserCog /> },
         { name: "Settings", path: "/settings", icon: <FaCog /> },
     ];
+
+    const openModal = () => {
+        setIsProfileModalOpen(true);
+    }
+
+    const closeModal = () => {
+        setIsProfileModalOpen(false);
+    }
 
 
     return (
@@ -43,26 +54,33 @@ const SideBar = ({ isSidebarExpanded, toggleSidebar }: Props) => {
                 </div>
                 {/* Profile Section */}
                 <div className="profile-summary">
-                    <div className="profile-summary-image">
+                    <div
+                        className="profile-summary-image"
+                        onClick={openModal}
+                    >
                         <img
                             src={userProfile?.profilePictureLink ? userProfile.profilePictureLink : "/profile.jpg"} // Replace with your profile image URL
                             alt="Profile"
                         />
+                        <span className="profile-tooltip">View Profile</span>
                     </div>
                     {/* Profile Details */}
                     <div className='profile-summary-details'>
                         {/* Profile Details */}
                         <div className='profile-summary-info'>
                             <h2>{`${userProfile?.firstName} ${userProfile?.lastName} `}</h2>
-                            <p >E-Rank</p>
-                            <p >Lvl. 3</p>
+                            <p >{`${userProgressDetails?.rank}-Rank`}</p>
+                            <p >{`Lvl. ${userProgressDetails?.level}`}</p>
                         </div>
                         {/* Progress Bar */}
-                        <div className="profile-summary-progress-container">
-                            <div
-                                className="profile-summary-progress"
-                                style={{ width: '60%' }} // Adjust progress percentage here
-                            ></div>
+                        <div className='profile-summary-progress'>
+                            <div className="profile-summary-progress-container">
+                                <div
+                                    className="profile-summary-progress-bar"
+                                    style={{ width: '60%' }} // Adjust progress percentage here
+                                ></div>
+                            </div>
+                            <p>{`${userProgressDetails?.exp}/${userProgressDetails?.expRequiredForNextLevel} exp`}</p>
                         </div>
                     </div>
 
@@ -74,7 +92,7 @@ const SideBar = ({ isSidebarExpanded, toggleSidebar }: Props) => {
                         {menus.map((menu) => (
                             <li
                                 key={menu.name}
-                                className={router.pathname === menu.path ? "active-menu" : ""}
+                                className={router.pathname.startsWith(menu.path) ? "active-menu" : ""}
                             >
                                 <Link href={menu.path}>
                                     <div className="menu-item-container">
@@ -105,6 +123,12 @@ const SideBar = ({ isSidebarExpanded, toggleSidebar }: Props) => {
                         </li>
                     </ul>
                 </div>
+                <ProfileModal
+                    open={isProfileModalOpen}
+                    onClose={closeModal}
+                    userProfile={userProfile!}
+                    userProgress={userProgressDetails!}
+                />
             </div>
         )
     )

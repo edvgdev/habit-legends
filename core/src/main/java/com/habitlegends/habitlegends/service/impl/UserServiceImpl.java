@@ -53,14 +53,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDTO getUserById(Long id) {
+    public UserDTO getUserDTOById(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         return modelMapper.map(user, UserDTO.class);
     }
 
     @Override
-    public List<UserDTO> getAllUsers() {
+    public User getUserById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+    }
+
+    @Override
+    public List<UserDTO> getAllUserDTOs() {
         return userRepository.findAll()
                 .stream()
                 .map(user -> modelMapper.map(user, UserDTO.class))

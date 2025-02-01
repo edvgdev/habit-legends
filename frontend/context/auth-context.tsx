@@ -1,8 +1,8 @@
 import { getUserProfile } from '@/api/api';
-import { isUserAuthenticated, loginAuth, logoutUser } from '@/api/auth';
+import { loginAuth, logoutUser } from '@/api/auth';
 import LoadingModal from '@/components/loading-modal';
 import { LoginRequest } from "@/types/authentication";
-import useUserStore, { UserProfile } from "@/types/user";
+import useUserStore from "@/types/user";
 import { useRouter } from "next/router";
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 
@@ -28,17 +28,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             }
             try {
                 if (isAuthenticated === false && !userProfile) {
-                    // If not authenticated, clear the user profile and redirect to login
-                    console.log("not auth");
-                    console.log(userProfile);
 
                     if (router.pathname !== "/login" && router.pathname !== "/register") {
                         router.push("/login");
                     }
-                } else {
-                    // If authenticated, fetch the full user profile
-                    console.log("authenticated");
-                    console.log(userProfile);
                 }
             } catch (error) {
                 // If the check fails, clear the user profile and redirect to login

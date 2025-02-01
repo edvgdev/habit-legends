@@ -30,3 +30,24 @@ export interface HabitStatReward {
     createdAt: string | null;
     updatedAt: string | null;
 };
+
+export interface UserHabitDetails {
+    userId: number | null;
+    habitDetails: HabitDetails;
+};
+
+export interface UserHabit {
+    id: number;
+    userId: number;
+    habitId: number;
+    createdAt: string;
+};
+
+export interface HabitCompletion {
+    id: number | null;
+    userId: number;
+    habitId: number;
+    completedAt: string | null;
+    description: string;
+    expEarned: number;
+}

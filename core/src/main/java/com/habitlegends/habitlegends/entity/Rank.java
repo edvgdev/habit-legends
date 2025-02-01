@@ -16,10 +16,19 @@ public class Rank {
     private Integer id;
 
     @Column(nullable = false, unique = true, length = 50)
-    private String name; 
+    private String name;
 
     @Column(nullable = false)
     private Integer minExp;
+
+    public Rank() {
+    }
+
+    public Rank(Integer id, String name, Integer minExp) {
+        this.id = id;
+        this.name = name;
+        this.minExp = minExp;
+    }
 
     public Integer getId() {
         return id;
@@ -45,5 +54,4 @@ public class Rank {
         this.minExp = minExp;
     }
 
-    
 }

@@ -11,7 +11,12 @@ public interface HabitCompletionService {
 
     List<HabitCompletionDTO> getAllHabitCompletions();
 
+    List<HabitCompletionDTO> getAllHabitCompletionsOfUser(Long userId);
+
+    List<HabitCompletionDTO> getAllHabitCompletionsOfUserToday(Long userId);
+
     HabitCompletionDTO updateHabitCompletion(Long id, HabitCompletionDTO habitCompletionDTO);
 
     void deleteHabitCompletion(Long id);
+
 }

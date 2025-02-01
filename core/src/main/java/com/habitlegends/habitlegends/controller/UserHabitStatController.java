@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.habitlegends.habitlegends.details.UserStatDetails;
 import com.habitlegends.habitlegends.dto.UserHabitStatDTO;
 import com.habitlegends.habitlegends.service.UserHabitStatService;
 
@@ -31,7 +32,7 @@ public class UserHabitStatController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserHabitStatDTO> getUserHabitStatById(@PathVariable Long id) {
+    public ResponseEntity<UserHabitStatDTO> getUserHabitStatById(@PathVariable("id") Long id) {
         return ResponseEntity.ok(userHabitStatService.getUserHabitStatById(id));
     }
 
@@ -40,14 +41,19 @@ public class UserHabitStatController {
         return ResponseEntity.ok(userHabitStatService.getAllUserHabitStats());
     }
 
+    @GetMapping("/all-user-stat/{userId}")
+    public ResponseEntity<List<UserStatDetails>> getAllUserStatByUser(@PathVariable("userId") Long userId) {
+        return ResponseEntity.ok(userHabitStatService.getAllUserStatByUser(userId));
+    }
+
     @PutMapping("/{id}")
-    public ResponseEntity<UserHabitStatDTO> updateUserHabitStat(@PathVariable Long id,
+    public ResponseEntity<UserHabitStatDTO> updateUserHabitStat(@PathVariable("id") Long id,
             @RequestBody UserHabitStatDTO userHabitStatDTO) {
         return ResponseEntity.ok(userHabitStatService.updateUserHabitStat(id, userHabitStatDTO));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUserHabitStat(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteUserHabitStat(@PathVariable("id") Long id) {
         userHabitStatService.deleteUserHabitStat(id);
         return ResponseEntity.noContent().build();
     }

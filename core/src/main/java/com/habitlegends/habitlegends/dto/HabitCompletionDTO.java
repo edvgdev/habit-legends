@@ -5,7 +5,8 @@ import java.time.LocalDateTime;
 public class HabitCompletionDTO {
 
     private Long id;
-    private Long userHabitId;
+    private Long userId;
+    private Long habitId;
     private LocalDateTime completedAt;
     private String description;
     private Integer expEarned;
@@ -13,10 +14,11 @@ public class HabitCompletionDTO {
     public HabitCompletionDTO() {
     }
 
-    public HabitCompletionDTO(Long id, Long userHabitId, LocalDateTime completedAt, String description,
+    public HabitCompletionDTO(Long id, Long userId, Long habitId, LocalDateTime completedAt, String description,
             Integer expEarned) {
         this.id = id;
-        this.userHabitId = userHabitId;
+        this.userId = userId;
+        this.habitId = habitId;
         this.completedAt = completedAt;
         this.description = description;
         this.expEarned = expEarned;
@@ -30,12 +32,20 @@ public class HabitCompletionDTO {
         this.id = id;
     }
 
-    public Long getUserHabitId() {
-        return userHabitId;
+    public Long getUserId() {
+        return userId;
     }
 
-    public void setUserHabitId(Long userHabitId) {
-        this.userHabitId = userHabitId;
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    public Long getHabitId() {
+        return habitId;
+    }
+
+    public void setHabitId(Long habitId) {
+        this.habitId = habitId;
     }
 
     public LocalDateTime getCompletedAt() {
@@ -62,6 +72,4 @@ public class HabitCompletionDTO {
         this.expEarned = expEarned;
     }
 
-    
-    
 }

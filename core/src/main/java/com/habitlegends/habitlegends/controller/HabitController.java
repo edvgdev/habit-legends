@@ -33,12 +33,12 @@ public class HabitController {
 
     @GetMapping("/{id}")
     public ResponseEntity<HabitDetails> getHabitById(@PathVariable Long id) {
-        return ResponseEntity.ok(habitService.getHabitById(id));
+        return ResponseEntity.ok(habitService.getHabitDetailsById(id));
     }
 
     @GetMapping("/all")
     public ResponseEntity<List<HabitDetails>> getAllHabits() {
-        return ResponseEntity.ok(habitService.getAllHabits());
+        return ResponseEntity.ok(habitService.getAllHabitDetails());
     }
 
     @PutMapping("/{id}")

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.habitlegends.habitlegends.details.UserHabitDetails;
 import com.habitlegends.habitlegends.dto.UserHabitDTO;
 import com.habitlegends.habitlegends.service.UserHabitService;
 
@@ -26,8 +27,8 @@ public class UserHabitController {
     }
 
     @PostMapping
-    public ResponseEntity<UserHabitDTO> createUserHabit(@RequestBody UserHabitDTO userHabitDTO) {
-        return ResponseEntity.ok(userHabitService.createUserHabit(userHabitDTO));
+    public ResponseEntity<UserHabitDTO> createUserHabit(@RequestBody UserHabitDetails userHabitDetails) {
+        return ResponseEntity.ok(userHabitService.createUserHabit(userHabitDetails));
     }
 
     @GetMapping("/{id}")
@@ -49,6 +50,11 @@ public class UserHabitController {
     public ResponseEntity<Void> deleteUserHabit(@PathVariable Long id) {
         userHabitService.deleteUserHabit(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/all-details/{userId}")
+    public ResponseEntity<List<UserHabitDetails>> getAllUserHabitDetails(@PathVariable("userId") Long userId) {
+        return ResponseEntity.ok(userHabitService.getAllUserHabitDetails(userId));
     }
 
 }

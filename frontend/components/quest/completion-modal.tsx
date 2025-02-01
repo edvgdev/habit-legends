@@ -1,68 +1,47 @@
-import { createCategory, updateCategory } from '@/api/api';
-import { Category } from '@/types/category';
-import React, { useEffect, useState } from 'react';
+import { submitQuestCompletion } from '@/api/api';
+import { HabitCompletion, UserHabitDetails } from '@/types/habit';
+import React, { useState } from 'react';
 import Modal from 'react-modal';
 import { toast } from 'react-toastify';
-
 
 interface Props {
     open: boolean;
     onClose: () => void;
     onSuccess: () => void;
-    category?: Category | null;
+    quest?: UserHabitDetails | null;
+    userId: number;
 }
 
-const CategoryFormModal = ({ open, onClose, category, onSuccess }: Props) => {
-
-    const [name, setName] = useState('');
+const CompletionModal = ({ open, onClose, quest, onSuccess, userId }: Props) => {
     const [description, setDescription] = useState('');
 
-    useEffect(() => {
-        if (category) {
-            setName(category.name || '');
-            setDescription(category.description || '');
-        } else {
-            setName('');
-            setDescription('');
+    const handleSubmit = async () => {
+        if (!userId && !quest) {
+            return
         }
 
-    }, [category]);
-
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        const categoryToSave: Category = {
-            id: category?.id || null,
-            name,
+        const habitCompletion: HabitCompletion = {
+            id: null,
+            userId,
+            habitId: quest?.habitDetails.habit.id!,
+            completedAt: null,
             description,
-            createdAt: category?.createdAt || null
+            expEarned: quest?.habitDetails.habit.baseExpReward!
         }
 
         try {
-            const savedCategory = category
-                ? await updateCategory(categoryToSave)
-                : await createCategory(categoryToSave);
-
-            toast.success(
-                category
-                    ? `Successfully updated category: ${savedCategory.name}`
-                    : `Successfully created category: ${savedCategory.name}`
-            );
-
-            onSuccess();
+            const savedCompletion = await submitQuestCompletion(habitCompletion);
+            toast.success(`${quest?.habitDetails.habit.name} completed!`);
+            console.log(savedCompletion);
         } catch (error) {
-            toast.error(
-                category
-                    ? `Failed to update category ${error}`
-                    : `Failed to create category ${error}`
-
-            );
+            toast.success(`Failed to complete ${quest?.habitDetails.habit.name}, ${error}`);
         } finally {
+            onSuccess();
             onClose();
         }
-    };
 
-    const isSaveDisabled = !name || !description;
 
+    }
     return (
         <Modal
             isOpen={open}
@@ -73,7 +52,7 @@ const CategoryFormModal = ({ open, onClose, category, onSuccess }: Props) => {
                     display: "flex", // Add flex display
                     justifyContent: "center", // Center horizontally
                     alignItems: "center",
-                    zIndex: "1"
+                    zIndex: "1000"
                 },
                 content: {
                     width: "auto",
@@ -92,22 +71,15 @@ const CategoryFormModal = ({ open, onClose, category, onSuccess }: Props) => {
             }}
         >
             <div className='modal-content'>
-                <h2>{category ? 'Edit Category' : 'Create New Category'}</h2>
+                <h2>{`Complete Quest: ${quest?.habitDetails.habit.name}`}</h2>
                 <form>
+                    <p> You are about to complete a quest. Having something to look back to is always great
+                        Please make sure to
+                        leave journal entry note. </p>
                     <div className='modal-content-form'>
-                        <label>Category Name:</label>
-                        <input
-                            type="text"
-                            placeholder='Enter category name'
-                            required
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                        />
-                    </div>
-                    <div className='modal-content-form'>
-                        <label>Description:</label>
+                        <label>Note:</label>
                         <textarea
-                            placeholder='Enter Description'
+                            placeholder='Enter notes here. You can log the process and how you were feeling when doing this quest'
                             required
                             value={description}
                             onChange={(e) => setDescription(e.target.value)}
@@ -126,9 +98,9 @@ const CategoryFormModal = ({ open, onClose, category, onSuccess }: Props) => {
                         type='submit'
                         className='action-button-primary'
                         onClick={handleSubmit}
-                        disabled={isSaveDisabled}
+                        disabled={!description}
                     >
-                        {category ? 'Update Category' : 'Save Category'}
+                        COMPLETE
                     </button>
                 </div>
             </div>
@@ -136,4 +108,4 @@ const CategoryFormModal = ({ open, onClose, category, onSuccess }: Props) => {
     )
 }
 
-export default CategoryFormModal
+export default CompletionModal

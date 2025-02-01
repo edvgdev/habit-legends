@@ -1,7 +1,8 @@
 import { Category } from "@/types/category";
-import { HabitAndStatRewards, HabitDetails } from "@/types/habit";
+import { HabitAndStatRewards, HabitCompletion, HabitDetails, UserHabit, UserHabitDetails } from "@/types/habit";
 import { Rank } from "@/types/Rank";
 import { Stat } from "@/types/stat";
+import { UserProgressDetails, UserStatDetails } from "@/types/user";
 import { UserPlan } from "@/types/user-plan";
 import api from "@/utils/axios-helper";
 import axios, { AxiosInstance, AxiosResponse } from "axios";
@@ -216,6 +217,72 @@ export const getUserProfile = async (): Promise<any> => {
     }
 };
 
+export const getUserProgressDetails = async (userId: number): Promise<UserProgressDetails> => {
+    try {
+        const response: AxiosResponse<UserProgressDetails> = await api.get(`user-progress/details/${userId}`);
+        return response.data;
+    } catch (error) {
+        console.error(error);
+        throw new Error("Failed to retrieve progress");
+    }
+}
 
+export const addQuestToUser = async (userHabit: UserHabitDetails): Promise<UserHabit> => {
+    try {
+        const response: AxiosResponse<UserHabit> = await api.post("user-habit", userHabit);
+        return response.data;
+    } catch (error: any) {
+        console.error(error);
+        throw new Error("Failed to add quest");
+    }
+};
 
+export const getAllUserQuests = async (userId: number): Promise<UserHabitDetails[]> => {
+    try {
+        const response: AxiosResponse<UserHabitDetails[]> = await api.get(`user-habit/all-details/${userId}`);
+        return response.data;
+    } catch (error) {
+        console.error(error);
+        throw new Error("Failed to retrieve quests");
+    }
+};
 
+export const submitQuestCompletion = async (completion: HabitCompletion): Promise<HabitCompletion> => {
+    try {
+        const response: AxiosResponse<HabitCompletion> = await api.post("habit-completion", completion);
+        return response.data;
+    } catch (error) {
+        console.error(error);
+        throw new Error("Failed to save quest completion");
+    }
+};
+
+export const getAllQuestCompletion = async (userId: number): Promise<HabitCompletion[]> => {
+    try {
+        const response: AxiosResponse<HabitCompletion[]> = await api.get(`habit-completion/all-user-completed/${userId}`);
+        return response.data;
+    } catch (error) {
+        console.error(error);
+        throw new Error("Failed to retrieve quest completion");
+    }
+};
+
+export const getAllQuestCompletionToday = async (userId: number): Promise<HabitCompletion[]> => {
+    try {
+        const response: AxiosResponse<HabitCompletion[]> = await api.get(`habit-completion/all-user-completed-today/${userId}`);
+        return response.data;
+    } catch (error) {
+        console.error(error);
+        throw new Error("Failed to retrieve quest completion");
+    }
+};
+
+export const getAllUserStatsByUser = async (userId: number): Promise<UserStatDetails[]> => {
+    try {
+        const response: AxiosResponse<UserStatDetails[]> = await api.get(`user-habit-stat/all-user-stat/${userId}`);
+        return response.data;
+    } catch (error) {
+        console.error(error);
+        throw new Error("Failed to retrieve user stats");
+    }
+};

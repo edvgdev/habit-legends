@@ -6,14 +6,17 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import com.habitlegends.habitlegends.details.UserProfileDetails;
 import com.habitlegends.habitlegends.dto.UserDTO;
+import com.habitlegends.habitlegends.entity.User;
 
 public interface UserService {
 
-    UserDTO getUserById(Long id);
+    UserDTO getUserDTOById(Long id);
 
-    List<UserDTO> getAllUsers();
+    List<UserDTO> getAllUserDTOs();
 
     void deleteUser(Long id);
 
     UserProfileDetails getUserProfile(UserDetails userDetails);
+
+    User getUserById(Long id);
 }

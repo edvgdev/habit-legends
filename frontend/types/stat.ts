@@ -10,3 +10,8 @@ export interface StatReward {
     statId: number | null;
     reward: number | null;
 }
+
+export interface StatNameAndReward {
+    name: string;
+    reward: number;
+}
