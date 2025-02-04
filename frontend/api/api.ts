@@ -269,7 +269,19 @@ export const getAllQuestCompletion = async (userId: number): Promise<HabitComple
 
 export const getAllQuestCompletionToday = async (userId: number): Promise<HabitCompletion[]> => {
     try {
-        const response: AxiosResponse<HabitCompletion[]> = await api.get(`habit-completion/all-user-completed-today/${userId}`);
+        const today = new Date();
+        const formattedStartDate = today.toISOString().split("T")[0] + "T00:00:00"; // Start of day
+        const formattedEndDate = today.toISOString().split("T")[0] + "T23:59:59"; // End of day
+
+        const response: AxiosResponse<HabitCompletion[]> = await api.get('habit-completion',
+            {
+                params: {
+                    userId: userId,
+                    startDate: formattedStartDate,
+                    endDate: formattedEndDate
+                }
+            }
+        );
         return response.data;
     } catch (error) {
         console.error(error);
