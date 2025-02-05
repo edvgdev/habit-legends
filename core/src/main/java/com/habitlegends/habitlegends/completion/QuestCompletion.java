@@ -16,9 +16,12 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 
+/**
+ * Entity class for storing quest completions
+ */
 @Entity
-@Table(name = "habit_completion")
-public class HabitCompletion {
+@Table(name = "quest_completion")
+public class QuestCompletion {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

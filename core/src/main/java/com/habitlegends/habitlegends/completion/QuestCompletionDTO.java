@@ -2,7 +2,10 @@ package com.habitlegends.habitlegends.completion;
 
 import java.time.LocalDateTime;
 
-public class HabitCompletionDTO {
+/**
+ * DTO class for quest completions
+ */
+public class QuestCompletionDTO {
 
     private Long id;
     private Long userId;
@@ -11,10 +14,10 @@ public class HabitCompletionDTO {
     private String description;
     private Integer expEarned;
 
-    public HabitCompletionDTO() {
+    public QuestCompletionDTO() {
     }
 
-    public HabitCompletionDTO(Long id, Long userId, Long habitId, LocalDateTime completedAt, String description,
+    public QuestCompletionDTO(Long id, Long userId, Long habitId, LocalDateTime completedAt, String description,
             Integer expEarned) {
         this.id = id;
         this.userId = userId;

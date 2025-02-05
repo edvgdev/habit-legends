@@ -1,5 +1,5 @@
 import { Category } from "@/types/category";
-import { HabitAndStatRewards, HabitCompletion, HabitDetails, UserHabit, UserHabitDetails } from "@/types/habit";
+import { HabitAndStatRewards, HabitCompletion, HabitCompletionFilterDetails, HabitDetails, UserHabit, UserHabitDetails } from "@/types/habit";
 import { Rank } from "@/types/Rank";
 import { Stat } from "@/types/stat";
 import { UserProgressDetails, UserStatDetails } from "@/types/user";
@@ -257,29 +257,11 @@ export const submitQuestCompletion = async (completion: HabitCompletion): Promis
     }
 };
 
-export const getAllQuestCompletion = async (userId: number): Promise<HabitCompletion[]> => {
+export const getAllQuestCompletions = async (filterDetails: HabitCompletionFilterDetails): Promise<HabitCompletion[]> => {
     try {
-        const response: AxiosResponse<HabitCompletion[]> = await api.get(`habit-completion/all-user-completed/${userId}`);
-        return response.data;
-    } catch (error) {
-        console.error(error);
-        throw new Error("Failed to retrieve quest completion");
-    }
-};
-
-export const getAllQuestCompletionToday = async (userId: number): Promise<HabitCompletion[]> => {
-    try {
-        const today = new Date();
-        const formattedStartDate = today.toISOString().split("T")[0] + "T00:00:00"; // Start of day
-        const formattedEndDate = today.toISOString().split("T")[0] + "T23:59:59"; // End of day
-
         const response: AxiosResponse<HabitCompletion[]> = await api.get('habit-completion',
             {
-                params: {
-                    userId: userId,
-                    startDate: formattedStartDate,
-                    endDate: formattedEndDate
-                }
+                params: filterDetails
             }
         );
         return response.data;

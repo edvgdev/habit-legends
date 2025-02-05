@@ -1,6 +1,6 @@
-import { getAllQuestCompletion, getAllQuestCompletionToday, getAllUserQuests, getStats } from '@/api/api';
+import { getAllQuestCompletions, getAllUserQuests, getStats } from '@/api/api';
 import UserQuestCard from '@/components/quest/user-quest-card';
-import { HabitCompletion, HabitDetails, UserHabitDetails } from '@/types/habit';
+import { HabitCompletion, HabitCompletionFilterDetails, HabitDetails, UserHabitDetails } from '@/types/habit';
 import { Stat, StatNameAndReward } from '@/types/stat';
 import useUserStore from '@/types/user';
 import { useRouter } from 'next/router';
@@ -78,7 +78,19 @@ const DailyQuest = () => {
         try {
             const quests = await getAllUserQuests(userProfile.id);
             const stats = await getStats();
-            const completions = await getAllQuestCompletionToday(userProfile.id);
+
+            const today = new Date();
+            const formattedStartDate = today.toISOString().split("T")[0] + "T00:00:00"; // Start of day
+            const formattedEndDate = today.toISOString().split("T")[0] + "T23:59:59"; // End of day
+
+            const filterDetails: HabitCompletionFilterDetails = {
+                userId: userProfile.id,
+                startDate: formattedStartDate,
+                endDate: formattedEndDate,
+                description: null,
+                habitId: null
+            };
+            const completions = await getAllQuestCompletions(filterDetails);
             setUserQuests(quests);
             setStats(stats);
             setUserQuestCompletions(completions);

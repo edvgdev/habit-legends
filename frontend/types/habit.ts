@@ -51,3 +51,11 @@ export interface HabitCompletion {
     description: string;
     expEarned: number;
 }
+
+export interface HabitCompletionFilterDetails {
+    userId: number | null;
+    habitId: number | null;
+    startDate: string | null;
+    endDate: string | null;
+    description: string | null;
+}

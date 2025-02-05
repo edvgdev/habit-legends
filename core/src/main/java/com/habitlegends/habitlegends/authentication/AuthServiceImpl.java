@@ -25,6 +25,9 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+/**
+ * Service class for handling user authentication
+ */
 @Service
 public class AuthServiceImpl implements AuthService {
 
@@ -46,6 +49,12 @@ public class AuthServiceImpl implements AuthService {
         this.userProgressService = userProgressService;
     }
 
+    /**
+     * Registers a new user
+     * 
+     * @param registrationRequest DTO containing the registration details
+     * @return DTO containing the registration response details
+     */
     @Override
     public AuthRequestResponseDTO register(AuthRequestResponseDTO registrationRequest) {
 
@@ -80,6 +89,13 @@ public class AuthServiceImpl implements AuthService {
         return response;
     }
 
+    /**
+     * Logs in a user
+     * 
+     * @param loginRequest DTO containing the login details
+     * @param response     HTTP response object
+     * @return DTO containing the login response details
+     */
     @Override
     public AuthRequestResponseDTO login(AuthRequestResponseDTO loginRequest, HttpServletResponse response) {
 
@@ -104,6 +120,12 @@ public class AuthServiceImpl implements AuthService {
         return authResponse;
     }
 
+    /**
+     * Refreshes the access token
+     * 
+     * @param request  HTTP request object
+     * @param response HTTP response object
+     */
     @Override
     public void refreshToken(HttpServletRequest request, HttpServletResponse response) {
         // Extract the refresh token from the cookie
@@ -123,11 +145,23 @@ public class AuthServiceImpl implements AuthService {
         }
     }
 
+    /**
+     * Checks if the provided email is already registered
+     * 
+     * @param email Email to check
+     * @return True if the email is already registered, false otherwise
+     */
     @Override
     public boolean isEmailAlreadyRegistered(String email) {
         return userRepository.findByEmail(email).isPresent();
     }
 
+    /**
+     * Handles the Google OAuth2 callback
+     * 
+     * @param token    OAuth2 token
+     * @param response HTTP response object
+     */
     @Override
     public void handleGoogleCallback(OAuth2AuthenticationToken token, HttpServletResponse response) {
 
@@ -162,6 +196,12 @@ public class AuthServiceImpl implements AuthService {
         setTokenCookies(response, accessToken, refreshToken);
     }
 
+    /**
+     * Logs out the user
+     * 
+     * @param request  HTTP request object
+     * @param response HTTP response object
+     */
     @Override
     public void logoutUser(HttpServletRequest request, HttpServletResponse response) {
 
@@ -175,6 +215,11 @@ public class AuthServiceImpl implements AuthService {
         clearTokenCookies(response);
     }
 
+    /**
+     * Checks if the user is authenticated
+     * 
+     * @return True if the user is authenticated, false otherwise
+     */
     @Override
     public boolean isAuthenticated() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -182,6 +227,13 @@ public class AuthServiceImpl implements AuthService {
                 authentication.isAuthenticated();
     }
 
+    /**
+     * Sets the access and refresh tokens in cookies
+     * 
+     * @param response     HTTP response object
+     * @param accessToken  access token
+     * @param refreshToken refresh token
+     */
     private void setTokenCookies(HttpServletResponse response, String accessToken, String refreshToken) {
         Cookie accessTokenCookie = new Cookie("accessToken", accessToken);
         accessTokenCookie.setHttpOnly(true);
@@ -198,6 +250,11 @@ public class AuthServiceImpl implements AuthService {
         response.addCookie(refreshTokenCookie);
     }
 
+    /**
+     * Clears the access and refresh tokens from cookies
+     * 
+     * @param response HTTP response object
+     */
     private void clearTokenCookies(HttpServletResponse response) {
         Cookie accessTokenCookie = new Cookie("accessToken", null);
         accessTokenCookie.setHttpOnly(true);
@@ -214,6 +271,12 @@ public class AuthServiceImpl implements AuthService {
         response.addCookie(refreshTokenCookie);
     }
 
+    /**
+     * Extracts the refresh token from the cookies
+     * 
+     * @param request HTTP request object
+     * @return refresh token
+     */
     private String getRefreshTokenFromCookies(HttpServletRequest request) {
         if (request.getCookies() != null) {
             for (Cookie cookie : request.getCookies()) {
@@ -225,6 +288,12 @@ public class AuthServiceImpl implements AuthService {
         return null;
     }
 
+    /**
+     * Creates a new user progress for a registered user
+     * 
+     * @param userId ID of the registered user
+     * @return DTO containing the saved user progress details
+     */
     private UserProgressDTO createProgressForRegisteredUser(Long userId) {
         UserProgressDTO userProgressToSave = new UserProgressDTO();
         userProgressToSave.setUserId(userId);

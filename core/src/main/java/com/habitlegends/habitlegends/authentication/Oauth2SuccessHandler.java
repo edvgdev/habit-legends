@@ -20,6 +20,9 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+/**
+ * Handler class for successful OAuth2 authentication
+ */
 @Component
 public class Oauth2SuccessHandler implements AuthenticationSuccessHandler {
 
@@ -34,6 +37,14 @@ public class Oauth2SuccessHandler implements AuthenticationSuccessHandler {
         this.userRepository = userRepository;
     }
 
+    /**
+     * Handles the successful authentication of a user using OAuth2
+     * 
+     * @param request        HTTP request
+     * @param response       HTTP response
+     * @param authentication Authentication object
+     * @throws IOException
+     */
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
             Authentication authentication) throws IOException {
@@ -78,6 +89,13 @@ public class Oauth2SuccessHandler implements AuthenticationSuccessHandler {
         response.sendRedirect("http://localhost:3000?login=success");
     }
 
+    /**
+     * Sets the access token and refresh token in cookies
+     * 
+     * @param response     HTTP response
+     * @param accessToken  Access token
+     * @param refreshToken Refresh token
+     */
     private void setTokenCookies(HttpServletResponse response, String accessToken, String refreshToken) {
         // Set access token cookie
         Cookie accessTokenCookie = new Cookie("accessToken", accessToken);
