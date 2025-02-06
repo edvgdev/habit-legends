@@ -9,7 +9,7 @@ public class QuestCompletionDTO {
 
     private Long id;
     private Long userId;
-    private Long habitId;
+    private Long questId;
     private LocalDateTime completedAt;
     private String description;
     private Integer expEarned;
@@ -17,11 +17,11 @@ public class QuestCompletionDTO {
     public QuestCompletionDTO() {
     }
 
-    public QuestCompletionDTO(Long id, Long userId, Long habitId, LocalDateTime completedAt, String description,
+    public QuestCompletionDTO(Long id, Long userId, Long questId, LocalDateTime completedAt, String description,
             Integer expEarned) {
         this.id = id;
         this.userId = userId;
-        this.habitId = habitId;
+        this.questId = questId;
         this.completedAt = completedAt;
         this.description = description;
         this.expEarned = expEarned;
@@ -43,12 +43,12 @@ public class QuestCompletionDTO {
         this.userId = userId;
     }
 
-    public Long getHabitId() {
-        return habitId;
+    public Long getQuestId() {
+        return questId;
     }
 
-    public void setHabitId(Long habitId) {
-        this.habitId = habitId;
+    public void setQuestId(Long questId) {
+        this.questId = questId;
     }
 
     public LocalDateTime getCompletedAt() {

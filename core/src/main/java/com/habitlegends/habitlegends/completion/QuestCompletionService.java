@@ -6,7 +6,7 @@ import java.util.List;
  * Service class for handling quest completions
  */
 public interface QuestCompletionService {
-    QuestCompletionDTO createHabitCompletion(QuestCompletionDTO habitCompletionDTO);
+    QuestCompletionDTO createQuestCompletion(QuestCompletionDTO questCompletionDTO);
 
     List<QuestCompletionDTO> getCompletionsByFilter(QuestCompletionFilterDetails filterDetails);
 

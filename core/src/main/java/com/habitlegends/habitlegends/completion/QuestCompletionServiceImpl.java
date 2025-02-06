@@ -8,8 +8,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.habitlegends.habitlegends.quest.HabitService;
-import com.habitlegends.habitlegends.statprogress.UserHabitStatService;
+import com.habitlegends.habitlegends.quest.QuestService;
+import com.habitlegends.habitlegends.statprogress.StatProgressService;
 import com.habitlegends.habitlegends.user.UserService;
 import com.habitlegends.habitlegends.userprogress.UserProgressService;
 
@@ -23,79 +23,79 @@ public class QuestCompletionServiceImpl implements QuestCompletionService {
 
     private final UserService userService;
 
-    private final HabitService habitService;
+    private final QuestService questService;
 
     private final UserProgressService userProgressService;
 
-    private final UserHabitStatService userHabitStatService;
+    private final StatProgressService statProgressService;
 
     private final ModelMapper modelMapper;
 
     public QuestCompletionServiceImpl(QuestCompletionRepository questCompletionRepository, UserService userService,
-            HabitService habitService, UserProgressService userProgressService,
-            UserHabitStatService userHabitStatService, ModelMapper modelMapper) {
+            QuestService questService, UserProgressService userProgressService,
+            StatProgressService statProgressService, ModelMapper modelMapper) {
         this.questCompletionRepository = questCompletionRepository;
         this.userService = userService;
-        this.habitService = habitService;
+        this.questService = questService;
         this.userProgressService = userProgressService;
-        this.userHabitStatService = userHabitStatService;
+        this.statProgressService = statProgressService;
         this.modelMapper = modelMapper;
     }
 
     /**
-     * Creates a new habit completion
+     * Creates a new quest completion
      * 
-     * @param habitCompletionDTO DTO containing the habit completion details
-     * @return DTO containing the saved habit completion details
+     * @param questCompletionDTO DTO containing the quest completion details
+     * @return DTO containing the saved quest completion details
      */
     @Transactional
     @Override
-    public QuestCompletionDTO createHabitCompletion(QuestCompletionDTO habitCompletionDTO) {
+    public QuestCompletionDTO createQuestCompletion(QuestCompletionDTO questCompletionDTO) {
 
-        QuestCompletion habitCompletion = convertToEntity(habitCompletionDTO);
-        QuestCompletion savedHabitCompletion = questCompletionRepository.save(habitCompletion);
+        QuestCompletion questCompletion = convertToEntity(questCompletionDTO);
+        QuestCompletion savedQuestCompletion = questCompletionRepository.save(questCompletion);
 
         // Trigger progress update for the user progress
-        userProgressService.triggerProgressUpdateOnCompletion(savedHabitCompletion.getUser().getId(),
-                savedHabitCompletion.getExpEarned());
+        userProgressService.triggerProgressUpdateOnCompletion(savedQuestCompletion.getUser().getId(),
+                savedQuestCompletion.getExpEarned());
 
-        // Add points to the user habit stat
-        userHabitStatService.addPoints(habitCompletionDTO.getUserId(), habitCompletionDTO.getHabitId());
-        return modelMapper.map(savedHabitCompletion, QuestCompletionDTO.class);
+        // Add points to the user quest stat
+        statProgressService.addPoints(questCompletionDTO.getUserId(), questCompletionDTO.getQuestId());
+        return modelMapper.map(savedQuestCompletion, QuestCompletionDTO.class);
     }
 
     /**
-     * Retrieves a list of habit completions based on the provided filter details
+     * Retrieves a list of quest completions based on the provided filter details
      * 
-     * @param filterDetails Filter details to be used for filtering the habit
+     * @param filterDetails Filter details to be used for filtering the quest
      *                      completions
-     * @return List of habit completions that match the provided filter details
+     * @return List of quest completions that match the provided filter details
      */
     @Override
     public List<QuestCompletionDTO> getCompletionsByFilter(QuestCompletionFilterDetails filterDetails) {
 
         Specification<QuestCompletion> spec = QuestCompletionSpecification.withFilters(filterDetails.getUserId(),
-                filterDetails.getHabitId(), filterDetails.getStartDate(),
+                filterDetails.getQuestId(), filterDetails.getStartDate(),
                 filterDetails.getEndDate(), filterDetails.getDescription());
 
         return questCompletionRepository.findAll(spec).stream()
-                .map(habitCompletion -> modelMapper.map(habitCompletion, QuestCompletionDTO.class))
+                .map(questCompletion -> modelMapper.map(questCompletion, QuestCompletionDTO.class))
                 .collect(Collectors.toList());
 
     }
 
     /**
-     * Converts a habit completion DTO to a habit completion entity
+     * Converts a quest completion DTO to a quest completion entity
      * 
-     * @param habitCompletionDTO DTO containing the habit completion details
-     * @return Habit completion entity
+     * @param questCompletionDTO DTO containing the quest completion details
+     * @return quest completion entity
      */
-    private QuestCompletion convertToEntity(QuestCompletionDTO habitCompletionDTO) {
-        QuestCompletion habitCompletion = modelMapper.map(habitCompletionDTO, QuestCompletion.class);
-        habitCompletion.setUser(userService.getUserById(habitCompletionDTO.getUserId()));
-        habitCompletion.setHabit(habitService.getHabitById(habitCompletionDTO.getHabitId()));
+    private QuestCompletion convertToEntity(QuestCompletionDTO questCompletionDTO) {
+        QuestCompletion questCompletion = modelMapper.map(questCompletionDTO, QuestCompletion.class);
+        questCompletion.setUser(userService.getUserById(questCompletionDTO.getUserId()));
+        questCompletion.setQuest(questService.getQuestById(questCompletionDTO.getQuestId()));
 
-        return habitCompletion;
+        return questCompletion;
     }
 
 }

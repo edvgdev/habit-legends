@@ -1,31 +1,32 @@
-import { Habit, HabitDetails } from '@/types/habit';
+import { Quest, QuestDetails } from '@/types/quest';
 import { StatNameAndReward } from '@/types/stat';
 import React, { Dispatch, SetStateAction } from 'react'
 import { FaPlus } from 'react-icons/fa';
 
 interface Props {
-    habit: HabitDetails;
+    quest: QuestDetails;
     statRewards: StatNameAndReward[];
-    setSelected: Dispatch<SetStateAction<HabitDetails | undefined>>;
+    setSelected: Dispatch<SetStateAction<QuestDetails | undefined>>;
     openConfirmation: () => void;
+    isAdded: boolean;
 }
 
-const QuestCard = ({ habit, statRewards, setSelected, openConfirmation }: Props) => {
+const QuestCard = ({ quest, statRewards, setSelected, openConfirmation, isAdded }: Props) => {
 
 
 
     return (
         <div className='quest-card-container'>
             <div className='quest-card-image'>
-                <img src={habit.habit.imageLink} />
+                <img src={quest.quest.imageLink} />
             </div>
             <div className='quest-card-info'>
-                <h3>{habit.habit.name}</h3>
+                <h3>{quest.quest.name}</h3>
                 <p>
-                    {habit.habit.description}
+                    {quest.quest.description}
                 </p>
                 <div className='quest-card-reward'>
-                    <p><span>+</span>{` ${habit.habit.baseExpReward} exp`}</p>
+                    <p><span>+</span>{` ${quest.quest.baseExpReward} exp`}</p>
                     {statRewards.map((statReward) => (
                         <p><span>+</span>{` ${statReward.reward} ${statReward.name}`}</p>
                     ))}
@@ -35,10 +36,11 @@ const QuestCard = ({ habit, statRewards, setSelected, openConfirmation }: Props)
                         className='action-button-primary'
                         style={{ height: "40px", padding: "0 2rem" }}
                         onClick={() => {
-                            setSelected(habit);
+                            setSelected(quest);
                             openConfirmation();
-                        }}>
-                        <FaPlus /> Add
+                        }}
+                        disabled={isAdded}>
+                        {isAdded ? 'Added' : <><FaPlus /> Add</>}
                     </button>
                 </div>
             </div>

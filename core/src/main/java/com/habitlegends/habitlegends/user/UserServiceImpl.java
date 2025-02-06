@@ -27,7 +27,7 @@ public class UserServiceImpl implements UserService {
             // Fetch user profile from the database
             String email = userDetails.getUsername();
             User user = userRepository.findByEmail(email)
-                    .orElseThrow(() -> new RuntimeException("Habit Category not found"));
+                    .orElseThrow(() -> new RuntimeException("User not found"));
 
             // Handle null UserPlan
             Integer planId = (user.getUserPlan() != null) ? user.getUserPlan().getId() : null;

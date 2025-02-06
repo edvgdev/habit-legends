@@ -2,7 +2,7 @@ import AdminSection from '@/components/admin/admin-section'
 import { useRouter } from 'next/router'
 import React from 'react'
 import AdminCategories from './categories';
-import Habits from './habits';
+import Quests from './quests';
 import Ranks from './ranks';
 import Stats from './stats';
 import UserPlans from './user-plans';
@@ -16,8 +16,8 @@ const Admin = () => {
 
     const renderContent = () => {
         switch (subpage) {
-            case "habits":
-                return <Habits />;
+            case "quests":
+                return <Quests />;
             case "categories":
                 return <AdminCategories />;
             case "ranks":
@@ -31,10 +31,10 @@ const Admin = () => {
                     <>
                         <h1>Admin Page</h1>
                         <AdminSection
-                            title='Habits'
-                            description='View, add, edit, and delete Habits.'
-                            buttonText='Manage Habits'
-                            onClick={() => navigateToSubpage("habits")}
+                            title='Quests'
+                            description='View, add, edit, and delete quests.'
+                            buttonText='Manage Quests'
+                            onClick={() => navigateToSubpage("quests")}
                         />
                         <AdminSection
                             title='Categories'

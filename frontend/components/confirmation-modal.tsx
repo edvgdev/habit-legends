@@ -41,7 +41,7 @@ const ConfirmationModal = ({ isOpen, title, message, onClose, onConfirm }: Props
             <div className='modal-content'>
                 <h2>{title}</h2>
                 <p>{message}</p>
-                <div style={{ marginTop: "20px" }}>
+                <div className='modal-button-group' style={{ marginTop: "20px" }}>
                     <button
                         className="action-button-secondary"
                         onClick={onClose}
@@ -50,7 +50,8 @@ const ConfirmationModal = ({ isOpen, title, message, onClose, onConfirm }: Props
                         Cancel
                     </button>
                     <button
-                        className="action-button-primary"
+                        type='submit'
+                        className='action-button-primary'
                         onClick={onConfirm}
                     >
                         Yes

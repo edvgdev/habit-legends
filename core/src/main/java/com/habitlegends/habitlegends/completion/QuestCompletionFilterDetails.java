@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
  */
 public class QuestCompletionFilterDetails {
     private Long userId;
-    private Long habitId;
+    private Long questId;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
     private String description;
@@ -15,10 +15,10 @@ public class QuestCompletionFilterDetails {
     public QuestCompletionFilterDetails() {
     }
 
-    public QuestCompletionFilterDetails(Long userId, Long habitId, LocalDateTime startDate, LocalDateTime endDate,
+    public QuestCompletionFilterDetails(Long userId, Long questId, LocalDateTime startDate, LocalDateTime endDate,
             String description) {
         this.userId = userId;
-        this.habitId = habitId;
+        this.questId = questId;
         this.startDate = startDate;
         this.endDate = endDate;
         this.description = description;
@@ -32,12 +32,12 @@ public class QuestCompletionFilterDetails {
         this.userId = userId;
     }
 
-    public Long getHabitId() {
-        return habitId;
+    public Long getQuestId() {
+        return questId;
     }
 
-    public void setHabitId(Long habitId) {
-        this.habitId = habitId;
+    public void setQuestId(Long questId) {
+        this.questId = questId;
     }
 
     public LocalDateTime getStartDate() {

@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
  * Controller class for handling quest completions
  */
 @RestController
-@RequestMapping("/api/habit-completion")
+@RequestMapping("/api/quest-completion")
 public class QuestCompletionController {
 
     private final QuestCompletionService questCompletionService;
@@ -23,15 +23,15 @@ public class QuestCompletionController {
     }
 
     /**
-     * Creates a new habit completion
+     * Creates a new quest completion
      * 
-     * @param habitCompletionDTO DTO containing the habit completion details
-     * @return DTO containing the saved habit completion details
+     * @param questCompletionDTO DTO containing the quest completion details
+     * @return DTO containing the saved quest completion details
      */
     @PostMapping
-    public ResponseEntity<QuestCompletionDTO> createHabitCompletion(
-            @RequestBody QuestCompletionDTO habitCompletionDTO) {
-        return ResponseEntity.ok(questCompletionService.createHabitCompletion(habitCompletionDTO));
+    public ResponseEntity<QuestCompletionDTO> createQuestCompletion(
+            @RequestBody QuestCompletionDTO questCompletionDTO) {
+        return ResponseEntity.ok(questCompletionService.createQuestCompletion(questCompletionDTO));
     }
 
     /**

@@ -26,17 +26,17 @@ public class QuestCompletionSpecification {
     }
 
     /**
-     * Filters quest completions by habit ID
+     * Filters quest completions by quest ID
      * 
-     * @param habitId ID of the habit
-     * @return Specification object for filtering quest completions by habit ID
+     * @param questId ID of the quest
+     * @return Specification object for filtering quest completions by quest ID
      */
-    public static Specification<QuestCompletion> withHabitId(Long habitId) {
+    public static Specification<QuestCompletion> withQuestId(Long questId) {
         return (root, query, criteriaBuilder) -> {
-            if (habitId == null) {
+            if (questId == null) {
                 return criteriaBuilder.conjunction();
             }
-            return criteriaBuilder.equal(root.get("habit").get("id"), habitId);
+            return criteriaBuilder.equal(root.get("quest").get("id"), questId);
         };
     }
 
@@ -78,15 +78,15 @@ public class QuestCompletionSpecification {
      * Combines all the filters
      * 
      * @param userId      ID of the user
-     * @param habitId     ID of the habit
+     * @param questId     ID of the quest
      * @param startDate   Start date of the completion
      * @param endDate     End date of the completion
      * @param description Description of the completion
      * @return Specification object for filtering quest completions
      */
-    public static Specification<QuestCompletion> withFilters(Long userId, Long habitId, LocalDateTime startDate,
+    public static Specification<QuestCompletion> withFilters(Long userId, Long questId, LocalDateTime startDate,
             LocalDateTime endDate, String description) {
-        return Specification.where(withUserId(userId)).and(withHabitId(habitId))
+        return Specification.where(withUserId(userId)).and(withQuestId(questId))
                 .and(withCompletedAtBetween(startDate, endDate))
                 .and(withDescriptionLike(description));
     }

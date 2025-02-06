@@ -10,7 +10,7 @@ public interface RankService {
 
     List<RankDTO> getAllRanks();
 
-    RankDTO updateRank(Integer id, RankDTO habitDTO);
+    RankDTO updateRank(Integer id, RankDTO rankDTO);
 
     void deleteRank(Integer id);
 

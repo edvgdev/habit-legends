@@ -1,7 +1,7 @@
-import { addQuestToUser, getHabits, getStats } from '@/api/api';
+import { addQuestToUser, getAllUserQuests, getQuests, getStats } from '@/api/api';
 import ConfirmationModal from '@/components/confirmation-modal';
 import QuestCard from '@/components/quest/quest-card'
-import { HabitDetails, UserHabitDetails } from '@/types/habit';
+import { QuestDetails, UserQuestDetails } from '@/types/quest';
 import { Stat, StatNameAndReward } from '@/types/stat';
 import useUserStore from '@/types/user';
 import React, { useEffect, useState } from 'react';
@@ -9,9 +9,10 @@ import { toast, ToastContainer } from 'react-toastify';
 
 const AddQuest = () => {
 
-    const [quests, setQuests] = useState<HabitDetails[]>([]);
+    const [quests, setQuests] = useState<QuestDetails[]>([]);
     const [stats, setStats] = useState<Stat[]>([]);
-    const [selectedQuest, setSelectedQuest] = useState<HabitDetails>();
+    const [selectedQuest, setSelectedQuest] = useState<QuestDetails>();
+    const [userQuests, setUserQuests] = useState<UserQuestDetails[]>([]);
 
     const [openCorfirmationModal, setOpenConfirmationModal] = useState(false);
 
@@ -34,21 +35,28 @@ const AddQuest = () => {
     const fetchData = async () => {
 
         try {
-            const quests = await getHabits();
+            const quests = await getQuests();
             const stats = await getStats();
+
             setQuests(quests);
             setStats(stats);
 
-            console.log(quests);
-            console.log(stats);
+            if (userProfile) {
+                const userQuests = await getAllUserQuests(userProfile.id);
+                setUserQuests(userQuests);
+            }
 
         } catch (error) {
             console.error(error);
         }
     };
 
-    const getStatsFromHabit = (habits: HabitDetails): StatNameAndReward[] => {
-        return habits.habitStatRewards.map(({ statId, baseStatReward }) => ({
+    const checkIfAdded = (questId: number): boolean => {
+        return userQuests.some(userQuest => userQuest.questDetails.quest.id === questId);
+    }
+
+    const getStatsFromQuest = (quest: QuestDetails): StatNameAndReward[] => {
+        return quest.questStatRewards.map(({ statId, baseStatReward }) => ({
             name: stats.find(stat => stat.id === statId)?.name || "Unknown",
             reward: baseStatReward,
         }));
@@ -59,17 +67,18 @@ const AddQuest = () => {
             return
         }
 
-        const userHabits: UserHabitDetails = {
+        const userQuests: UserQuestDetails = {
             userId: userProfile?.id,
-            habitDetails: selectedQuest
+            questDetails: selectedQuest
         }
 
         try {
-            await addQuestToUser(userHabits);
+            await addQuestToUser(userQuests);
             toast.success('Successfully added to your quests');
         } catch (error) {
             toast.error(`Failed to add to your quests ${error}`);
         } finally {
+            fetchData();
             closeConfirmationModal();
         }
 
@@ -84,9 +93,10 @@ const AddQuest = () => {
                 {quests.map((quest) => (
                     <QuestCard
                         openConfirmation={openConfirmationModal}
-                        habit={quest}
-                        statRewards={getStatsFromHabit(quest)}
+                        quest={quest}
+                        statRewards={getStatsFromQuest(quest)}
                         setSelected={setSelectedQuest}
+                        isAdded={checkIfAdded(quest.quest.id!)}
                     />
                 ))}
 
@@ -95,7 +105,7 @@ const AddQuest = () => {
                 isOpen={openCorfirmationModal}
                 onClose={closeConfirmationModal}
                 title='Add to your Quests'
-                message={`You are about to add ${selectedQuest?.habit.name} to your quests, Do you want to continue?`}
+                message={`You are about to add ${selectedQuest?.quest.name} to your quests, Do you want to continue?`}
                 onConfirm={addQuest}
             />
             <ToastContainer position='top-right' autoClose={3000} />

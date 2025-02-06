@@ -687,15 +687,16 @@ body {
   background-color: #0BBD8B;
   border: transparent;
   border-radius: 0.8rem;
-  font-size: 0.8rem;
+  font-size: 1rem;
   color: #ffffff;
-  padding: 0 1rem;
+  padding: 0 2rem;
   height: 50px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
+  ;
 }
 
 /* Disabled state */

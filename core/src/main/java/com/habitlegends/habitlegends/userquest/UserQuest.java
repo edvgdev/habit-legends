@@ -1,4 +1,4 @@
-package com.habitlegends.habitlegends.completion;
+package com.habitlegends.habitlegends.userquest;
 
 import java.time.LocalDateTime;
 
@@ -16,12 +16,9 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 
-/**
- * Entity class for storing quest completions
- */
 @Entity
-@Table(name = "quest_completion")
-public class QuestCompletion {
+@Table(name = "user_quest")
+public class UserQuest {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,18 +32,12 @@ public class QuestCompletion {
     @JoinColumn(name = "quest_id", nullable = false, referencedColumnName = "id")
     private Quest quest;
 
-    @Column(name = "completed_at", nullable = false, updatable = false)
-    private LocalDateTime completedAt;
-
-    @Column(name = "description")
-    private String description;
-
-    @Column(name = "exp_earned", nullable = false)
-    private Integer expEarned;
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
 
     @PrePersist
     protected void onCreate() {
-        this.completedAt = LocalDateTime.now();
+        this.createdAt = LocalDateTime.now();
     }
 
     public Long getId() {
@@ -73,28 +64,12 @@ public class QuestCompletion {
         this.quest = quest;
     }
 
-    public LocalDateTime getCompletedAt() {
-        return completedAt;
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
-    public void setCompletedAt(LocalDateTime completedAt) {
-        this.completedAt = completedAt;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Integer getExpEarned() {
-        return expEarned;
-    }
-
-    public void setExpEarned(Integer expEarned) {
-        this.expEarned = expEarned;
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 
 }
