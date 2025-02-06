@@ -1,5 +1,5 @@
 import { submitQuestCompletion } from '@/api/api';
-import { HabitCompletion, UserHabitDetails } from '@/types/habit';
+import { QuestCompletion, UserQuestDetails } from '@/types/quest';
 import React, { useState } from 'react';
 import Modal from 'react-modal';
 import { toast } from 'react-toastify';
@@ -8,7 +8,7 @@ interface Props {
     open: boolean;
     onClose: () => void;
     onSuccess: () => void;
-    quest?: UserHabitDetails | null;
+    quest?: UserQuestDetails | null;
     userId: number;
 }
 
@@ -20,21 +20,21 @@ const CompletionModal = ({ open, onClose, quest, onSuccess, userId }: Props) => 
             return
         }
 
-        const habitCompletion: HabitCompletion = {
+        const questCompletion: QuestCompletion = {
             id: null,
             userId,
-            habitId: quest?.habitDetails.habit.id!,
+            questId: quest?.questDetails.quest.id!,
             completedAt: null,
             description,
-            expEarned: quest?.habitDetails.habit.baseExpReward!
+            expEarned: quest?.questDetails.quest.baseExpReward!
         }
 
         try {
-            const savedCompletion = await submitQuestCompletion(habitCompletion);
-            toast.success(`${quest?.habitDetails.habit.name} completed!`);
+            const savedCompletion = await submitQuestCompletion(questCompletion);
+            toast.success(`${quest?.questDetails.quest.name} completed!`);
             console.log(savedCompletion);
         } catch (error) {
-            toast.success(`Failed to complete ${quest?.habitDetails.habit.name}, ${error}`);
+            toast.success(`Failed to complete ${quest?.questDetails.quest.name}, ${error}`);
         } finally {
             onSuccess();
             onClose();
@@ -71,7 +71,7 @@ const CompletionModal = ({ open, onClose, quest, onSuccess, userId }: Props) => 
             }}
         >
             <div className='modal-content'>
-                <h2>{`Complete Quest: ${quest?.habitDetails.habit.name}`}</h2>
+                <h2>{`Complete Quest: ${quest?.questDetails.quest.name}`}</h2>
                 <form>
                     <p> You are about to complete a quest. Having something to look back to is always great
                         Please make sure to

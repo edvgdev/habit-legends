@@ -1,9 +1,9 @@
-import { UserHabitDetails } from '@/types/habit'
+import { UserQuestDetails } from '@/types/quest'
 import React from 'react'
 
 interface Props {
-    userQuest: UserHabitDetails;
-    onClick: (quest: UserHabitDetails) => void;
+    userQuest: UserQuestDetails;
+    onClick: (quest: UserQuestDetails) => void;
     isSelected: boolean;
     isCompleted: boolean;
 }
@@ -18,12 +18,12 @@ const UserQuestCard = ({ userQuest, onClick, isSelected, isCompleted }: Props) =
             }}
         >
             <div className='user-quest-item-image'>
-                <img src={userQuest.habitDetails.habit.imageLink} />
+                <img src={userQuest.questDetails.quest.imageLink} />
             </div>
             <div className='user-quest-item-info'>
-                <h3>{userQuest.habitDetails.habit.name}</h3>
+                <h3>{userQuest.questDetails.quest.name}</h3>
                 <p>
-                    {userQuest.habitDetails.habit.description}
+                    {userQuest.questDetails.quest.description}
                 </p>
             </div>
             <div className='user-quest-completion'>

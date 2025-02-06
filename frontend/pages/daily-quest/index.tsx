@@ -1,6 +1,6 @@
-import { getAllQuestCompletion, getAllQuestCompletionToday, getAllUserQuests, getStats } from '@/api/api';
+import { getAllQuestCompletions, getAllUserQuests, getStats } from '@/api/api';
 import UserQuestCard from '@/components/quest/user-quest-card';
-import { HabitCompletion, HabitDetails, UserHabitDetails } from '@/types/habit';
+import { QuestCompletion, QuestCompletionFilterDetails, QuestDetails, UserQuestDetails } from '@/types/quest';
 import { Stat, StatNameAndReward } from '@/types/stat';
 import useUserStore from '@/types/user';
 import { useRouter } from 'next/router';
@@ -15,10 +15,10 @@ const DailyQuest = () => {
     const router = useRouter();
     const { userProfile } = useUserStore();
 
-    const [userQuests, setUserQuests] = useState<UserHabitDetails[]>([]);
-    const [selectedQuest, setSelectedQuest] = useState<UserHabitDetails | null>();
+    const [userQuests, setUserQuests] = useState<UserQuestDetails[]>([]);
+    const [selectedQuest, setSelectedQuest] = useState<UserQuestDetails | null>();
     const [selectedQuestRewards, setSelectedQuestRewards] = useState<StatNameAndReward[]>([]);
-    const [userQuestCompletions, setUserQuestCompletions] = useState<HabitCompletion[]>([]);
+    const [userQuestCompletions, setUserQuestCompletions] = useState<QuestCompletion[]>([]);
 
     const [stats, setStats] = useState<Stat[]>([]);
 
@@ -44,9 +44,9 @@ const DailyQuest = () => {
         closeDrawer();
     }
 
-    const handleQuestClick = (quest: UserHabitDetails) => {
+    const handleQuestClick = (quest: UserQuestDetails) => {
         setSelectedQuest(quest);
-        setSelectedQuestRewards(getStatsFromHabit(quest.habitDetails));
+        setSelectedQuestRewards(getStatsFromQuest(quest.questDetails));
         setIsDrawerOpen(true);
     }
 
@@ -56,15 +56,15 @@ const DailyQuest = () => {
         setSelectedQuestRewards([]);
     };
 
-    const getStatsFromHabit = (habits: HabitDetails): StatNameAndReward[] => {
-        return habits.habitStatRewards.map(({ statId, baseStatReward }) => ({
+    const getStatsFromQuest = (quest: QuestDetails): StatNameAndReward[] => {
+        return quest.questStatRewards.map(({ statId, baseStatReward }) => ({
             name: stats.find(stat => stat.id === statId)?.name || "Unknown",
             reward: baseStatReward,
         }));
     };
 
-    const checkIfCompleted = (habitId: number): boolean => {
-        return userQuestCompletions.some(completion => completion.habitId === habitId);
+    const checkIfCompleted = (questId: number): boolean => {
+        return userQuestCompletions.some(completion => completion.questId === questId);
     }
 
     useEffect(() => {
@@ -78,7 +78,19 @@ const DailyQuest = () => {
         try {
             const quests = await getAllUserQuests(userProfile.id);
             const stats = await getStats();
-            const completions = await getAllQuestCompletionToday(userProfile.id);
+
+            const today = new Date();
+            const formattedStartDate = today.toISOString().split("T")[0] + "T00:00:00"; // Start of day
+            const formattedEndDate = today.toISOString().split("T")[0] + "T23:59:59"; // End of day
+
+            const filterDetails: QuestCompletionFilterDetails = {
+                userId: userProfile.id,
+                startDate: formattedStartDate,
+                endDate: formattedEndDate,
+                description: null,
+                questId: null
+            };
+            const completions = await getAllQuestCompletions(filterDetails);
             setUserQuests(quests);
             setStats(stats);
             setUserQuestCompletions(completions);
@@ -99,14 +111,14 @@ const DailyQuest = () => {
                 <div className='user-quest-items'>
                     {userQuests.map((userQuest) => {
                         const isSelected =
-                            userQuest.habitDetails.habit.id ===
-                            selectedQuest?.habitDetails.habit.id;
+                            userQuest.questDetails.quest.id ===
+                            selectedQuest?.questDetails.quest.id;
                         return (
                             <UserQuestCard
                                 userQuest={userQuest}
                                 onClick={handleQuestClick}
                                 isSelected={isSelected}
-                                isCompleted={checkIfCompleted(userQuest.habitDetails.habit.id!)}
+                                isCompleted={checkIfCompleted(userQuest.questDetails.quest.id!)}
                             />
                         )
                     })}
@@ -127,16 +139,16 @@ const DailyQuest = () => {
                         {selectedQuest ? (
                             <>
                                 <div className='user-quest-preview-image'>
-                                    <img src={selectedQuest.habitDetails.habit.imageLink} />
+                                    <img src={selectedQuest.questDetails.quest.imageLink} />
                                 </div>
                                 <div className='user-quest-preview-info'>
-                                    <h2>{selectedQuest?.habitDetails.habit.name}</h2>
+                                    <h2>{selectedQuest?.questDetails.quest.name}</h2>
                                     <p>
-                                        {selectedQuest?.habitDetails.habit.description}
+                                        {selectedQuest?.questDetails.quest.description}
                                     </p>
                                 </div>
                                 <div className='quest-card-reward'>
-                                    <p><span>+</span>{` ${selectedQuest.habitDetails.habit.baseExpReward} Exp`}</p>
+                                    <p><span>+</span>{` ${selectedQuest.questDetails.quest.baseExpReward} Exp`}</p>
                                     {selectedQuestRewards.map((statReward) => (
                                         <p><span>+</span>{` ${statReward.reward} ${statReward.name}`}</p>
                                     ))}
@@ -145,12 +157,12 @@ const DailyQuest = () => {
                                     <button
                                         className='action-button-primary'
                                         style={{ height: "40px", padding: "0 2rem" }}
-                                        disabled={checkIfCompleted(selectedQuest?.habitDetails.habit.id!)}
+                                        disabled={checkIfCompleted(selectedQuest?.questDetails.quest.id!)}
                                         onClick={() => {
                                             openFormModal();
                                         }}>
                                         {
-                                            checkIfCompleted(selectedQuest?.habitDetails.habit.id!)
+                                            checkIfCompleted(selectedQuest?.questDetails.quest.id!)
                                                 ? 'COMPLETED'
                                                 : 'COMPLETE'}
                                     </button>

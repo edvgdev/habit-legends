@@ -1,5 +1,5 @@
 import { Category } from "@/types/category";
-import { HabitAndStatRewards, HabitCompletion, HabitDetails, UserHabit, UserHabitDetails } from "@/types/habit";
+import { QuestAndStatRewards, QuestCompletion, QuestCompletionFilterDetails, QuestDetails, UserQuest, UserQuestDetails } from "@/types/quest";
 import { Rank } from "@/types/Rank";
 import { Stat } from "@/types/stat";
 import { UserProgressDetails, UserStatDetails } from "@/types/user";
@@ -12,7 +12,7 @@ import axios, { AxiosInstance, AxiosResponse } from "axios";
 
 export const createCategory = async (category: Category): Promise<Category> => {
     try {
-        const response: AxiosResponse<Category> = await api.post("habit-category", category);
+        const response: AxiosResponse<Category> = await api.post("category", category);
         return response.data;
     } catch (error: any) {
         console.error(error.response?.status);
@@ -22,7 +22,7 @@ export const createCategory = async (category: Category): Promise<Category> => {
 
 export const updateCategory = async (category: Category): Promise<Category> => {
     try {
-        const response: AxiosResponse<Category> = await api.put(`habit-category/${category.id}`, category);
+        const response: AxiosResponse<Category> = await api.put(`category/${category.id}`, category);
         return response.data;
     } catch (error: any) {
         console.error(error.response?.status);
@@ -32,7 +32,7 @@ export const updateCategory = async (category: Category): Promise<Category> => {
 
 export const getCategories = async (): Promise<Category[]> => {
     try {
-        const response: AxiosResponse<Category[]> = await api.get("habit-category/all");
+        const response: AxiosResponse<Category[]> = await api.get("category/all");
         return response.data;
     } catch (error: any) {
         throw new Error(`Failed to retrieve category: ${error.response?.status}`);
@@ -41,7 +41,7 @@ export const getCategories = async (): Promise<Category[]> => {
 
 export const deleteCategory = async (id: number): Promise<void> => {
     try {
-        await api.delete(`habit-category/${id}`);
+        await api.delete(`category/${id}`);
     } catch (error: any) {
         console.error(error.response?.status);
         throw new Error("Failed to delete category");
@@ -168,43 +168,43 @@ export const deleteUserPlan = async (id: number): Promise<void> => {
     }
 };
 
-// Habit
+// Quests
 
-export const createHabit = async (habitStatRewards: HabitAndStatRewards): Promise<HabitDetails> => {
+export const createQuest = async (questStatRewards: QuestAndStatRewards): Promise<QuestDetails> => {
     try {
-        const response: AxiosResponse<HabitDetails> = await api.post("habit", habitStatRewards);
+        const response: AxiosResponse<QuestDetails> = await api.post("quest", questStatRewards);
         return response.data;
     } catch (error: any) {
         console.error(error.response?.status);
-        throw new Error("Failed to create Habit");
+        throw new Error("Failed to create Quest");
     }
 };
 
-export const updateHabit = async (habitStatRewards: HabitAndStatRewards): Promise<HabitDetails> => {
+export const updateQuest = async (questStatRewards: QuestAndStatRewards): Promise<QuestDetails> => {
     try {
-        const response: AxiosResponse<HabitDetails> = await api.put(`habit/${habitStatRewards.habit.id}`, habitStatRewards);
+        const response: AxiosResponse<QuestDetails> = await api.put(`quest/${questStatRewards.quest.id}`, questStatRewards);
         return response.data;
     } catch (error: any) {
         console.error(error.response?.status);
-        throw new Error("Failed to update habit");
+        throw new Error("Failed to update quest");
     }
 };
 
-export const getHabits = async (): Promise<HabitDetails[]> => {
+export const getQuests = async (): Promise<QuestDetails[]> => {
     try {
-        const response: AxiosResponse<HabitDetails[]> = await api.get("habit/all");
+        const response: AxiosResponse<QuestDetails[]> = await api.get("quest/all");
         return response.data;
     } catch (error: any) {
-        throw new Error(`Failed to retrieve Habits: ${error.response?.status}`);
+        throw new Error(`Failed to retrieve Quests: ${error.response?.status}`);
     }
 };
 
-export const deleteHabit = async (id: number): Promise<void> => {
+export const deleteQuest = async (id: number): Promise<void> => {
     try {
-        await api.delete(`habit/${id}`);
+        await api.delete(`quest/${id}`);
     } catch (error: any) {
         console.error(error.response?.status);
-        throw new Error("Failed to delete habit");
+        throw new Error("Failed to delete quest");
     }
 };
 
@@ -227,9 +227,9 @@ export const getUserProgressDetails = async (userId: number): Promise<UserProgre
     }
 }
 
-export const addQuestToUser = async (userHabit: UserHabitDetails): Promise<UserHabit> => {
+export const addQuestToUser = async (userQuestDetails: UserQuestDetails): Promise<UserQuest> => {
     try {
-        const response: AxiosResponse<UserHabit> = await api.post("user-habit", userHabit);
+        const response: AxiosResponse<UserQuest> = await api.post("user-quest", userQuestDetails);
         return response.data;
     } catch (error: any) {
         console.error(error);
@@ -237,9 +237,9 @@ export const addQuestToUser = async (userHabit: UserHabitDetails): Promise<UserH
     }
 };
 
-export const getAllUserQuests = async (userId: number): Promise<UserHabitDetails[]> => {
+export const getAllUserQuests = async (userId: number): Promise<UserQuestDetails[]> => {
     try {
-        const response: AxiosResponse<UserHabitDetails[]> = await api.get(`user-habit/all-details/${userId}`);
+        const response: AxiosResponse<UserQuestDetails[]> = await api.get(`user-quest/all-details/${userId}`);
         return response.data;
     } catch (error) {
         console.error(error);
@@ -247,9 +247,9 @@ export const getAllUserQuests = async (userId: number): Promise<UserHabitDetails
     }
 };
 
-export const submitQuestCompletion = async (completion: HabitCompletion): Promise<HabitCompletion> => {
+export const submitQuestCompletion = async (completion: QuestCompletion): Promise<QuestCompletion> => {
     try {
-        const response: AxiosResponse<HabitCompletion> = await api.post("habit-completion", completion);
+        const response: AxiosResponse<QuestCompletion> = await api.post("quest-completion", completion);
         return response.data;
     } catch (error) {
         console.error(error);
@@ -257,19 +257,13 @@ export const submitQuestCompletion = async (completion: HabitCompletion): Promis
     }
 };
 
-export const getAllQuestCompletion = async (userId: number): Promise<HabitCompletion[]> => {
+export const getAllQuestCompletions = async (filterDetails: QuestCompletionFilterDetails): Promise<QuestCompletion[]> => {
     try {
-        const response: AxiosResponse<HabitCompletion[]> = await api.get(`habit-completion/all-user-completed/${userId}`);
-        return response.data;
-    } catch (error) {
-        console.error(error);
-        throw new Error("Failed to retrieve quest completion");
-    }
-};
-
-export const getAllQuestCompletionToday = async (userId: number): Promise<HabitCompletion[]> => {
-    try {
-        const response: AxiosResponse<HabitCompletion[]> = await api.get(`habit-completion/all-user-completed-today/${userId}`);
+        const response: AxiosResponse<QuestCompletion[]> = await api.get('quest-completion',
+            {
+                params: filterDetails
+            }
+        );
         return response.data;
     } catch (error) {
         console.error(error);
@@ -279,7 +273,7 @@ export const getAllQuestCompletionToday = async (userId: number): Promise<HabitC
 
 export const getAllUserStatsByUser = async (userId: number): Promise<UserStatDetails[]> => {
     try {
-        const response: AxiosResponse<UserStatDetails[]> = await api.get(`user-habit-stat/all-user-stat/${userId}`);
+        const response: AxiosResponse<UserStatDetails[]> = await api.get(`stat-progress/all-user-stat/${userId}`);
         return response.data;
     } catch (error) {
         console.error(error);
