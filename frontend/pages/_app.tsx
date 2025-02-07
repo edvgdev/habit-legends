@@ -1,5 +1,7 @@
 import { AuthProvider, useAuth } from "@/context/auth-context";
 import "@/styles/globals.css";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import type { AppProps } from "next/app";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
@@ -18,12 +20,14 @@ export default function App({ Component, pageProps }: AppProps) {
   const isAuthPage = authRoutes.includes(router.pathname);
 
   return (
-    <AuthProvider>
-      <AppContent
-        Component={Component}
-        pageProps={pageProps}
-        isAuthPage={isAuthPage}
-      />
-    </AuthProvider>
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
+      <AuthProvider>
+        <AppContent
+          Component={Component}
+          pageProps={pageProps}
+          isAuthPage={isAuthPage}
+        />
+      </AuthProvider>
+    </LocalizationProvider>
   );
 }

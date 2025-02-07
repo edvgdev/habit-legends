@@ -49,6 +49,7 @@ body {
 .page-placeholder {
   flex-grow: 1;
   height: 100%;
+  overflow: hidden
 }
 
 .auth-layout {
@@ -929,7 +930,6 @@ body {
   padding: 3rem 1rem;
   gap: 1rem;
   overflow-y: auto;
-
 }
 
 .daily-quests-header {
@@ -1232,6 +1232,177 @@ body {
   transition: right 0.3s ease;
   margin-right: -70px;
 }
+
+
+.quests-overview {
+  display: flex;
+  flex-direction: column;
+  height: 95%;
+  padding: 3rem 1rem;
+  gap: 1rem;
+  margin-left: 20px;
+}
+
+.quests-overview-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.quests-overview-header h2 {
+  font-size: 2rem;
+  font-weight: 400;
+}
+
+.overview-container {
+  display: flex;
+  flex-direction: column;
+  background-color: #181F30;
+  color: white;
+  padding: 2rem 1rem;
+  border-radius: 10px;
+  gap: 1.5rem;
+  height: 70vh;
+}
+
+.overview-calendar-view {
+  overflow: scroll;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.08) rgba(255, 255, 255, 0.02);
+}
+
+.overview-grid-container {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  min-width: 1000px;
+}
+
+.overview-grid-header {
+  display: flex;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background-color: rgba(24, 31, 48, 0.95);
+  /* Slight transparency */
+  backdrop-filter: blur(5px);
+}
+
+.overview-grid-day,
+.overview-empty-cell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: clamp(40px, 5vw, 60px);
+  /* Responsive size */
+  height: clamp(40px, 5vw, 60px);
+  text-align: center;
+  font-weight: bold;
+  margin: 5px 2.5px;
+  background-color: #232C43;
+  border-radius: 5px;
+  font-size: clamp(12px, 1.5vw, 18px);
+  /* Responsive font */
+}
+
+.overview-empty-cell {
+  width: clamp(200px, 10vw, 250px);
+  margin: 0 2px;
+  background-color: #232C43;
+  position: sticky;
+  left: 0;
+  z-index: 3;
+}
+
+
+.overview-grid-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.overview-grid-row-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: clamp(200px, 10vw, 250px);
+  height: clamp(40px, 5vw, 60px);
+  text-align: left;
+  font-weight: bold;
+  border-radius: 5px;
+  font-size: clamp(10px, 1.5vw, 18px);
+  background-color: #232C43;
+  margin: 0 2px;
+  position: sticky;
+  left: 0;
+  backdrop-filter: blur(5px);
+  /* Smooth blur effect */
+  border-right: 2px solid #2a2a2a;
+}
+
+.overview-grid-cell {
+  width: clamp(40px, 5vw, 60px);
+  height: clamp(40px, 5vw, 60px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+  margin: 0 2.5px;
+  background-color: rgba(97, 93, 93, 0.35);
+}
+
+.overview-grid-cell.completed {
+  cursor: pointer;
+}
+
+.overview-grid-cell.completed:hover {
+  background-color: rgba(97, 93, 93, 0.5);
+}
+
+.completion-details-modal {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  background: linear-gradient(to bottom left,
+      #113237 0%,
+      #122B32 7%,
+      #13242E 18%,
+      #141A28 45%,
+      #0E121C 100%);
+  padding: 2rem;
+  border-radius: 8px;
+  width: 500px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.completion-details-modal h2 {
+  margin: 1rem;
+  font-size: 1.8rem;
+  text-align: center;
+}
+
+.completion-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  padding: 1rem;
+  color: #ccc;
+  margin-bottom: 1.5rem;
+}
+
+.completion-content p {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.4;
+}
+
+.completion-content strong {
+  color: #fff;
+}
+
 
 /* Responsive styles */
 @container quest-container (max-width: 768px) {
