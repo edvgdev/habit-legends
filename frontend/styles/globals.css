@@ -1360,6 +1360,50 @@ body {
   background-color: rgba(97, 93, 93, 0.5);
 }
 
+.completion-details-modal {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  background: linear-gradient(to bottom left,
+      #113237 0%,
+      #122B32 7%,
+      #13242E 18%,
+      #141A28 45%,
+      #0E121C 100%);
+  padding: 2rem;
+  border-radius: 8px;
+  width: 500px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.completion-details-modal h2 {
+  margin: 1rem;
+  font-size: 1.8rem;
+  text-align: center;
+}
+
+.completion-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  padding: 1rem;
+  color: #ccc;
+  margin-bottom: 1.5rem;
+}
+
+.completion-content p {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.4;
+}
+
+.completion-content strong {
+  color: #fff;
+}
+
+
 /* Responsive styles */
 @container quest-container (max-width: 768px) {
   .user-quest-preview {

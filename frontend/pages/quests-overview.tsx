@@ -1,4 +1,5 @@
 import { getAllQuestCompletions, getAllUserQuests } from '@/api/api';
+import CompletionDetailsModal from '@/components/quest-overview/completion-details-modal';
 import { QuestCompletion, QuestCompletionFilterDetails, UserQuestDetails } from '@/types/quest';
 import useUserStore from '@/types/user';
 import { DatePicker } from '@mui/x-date-pickers';
@@ -10,6 +11,9 @@ const QuestsOverview = () => {
     const [selectedDate, setSelectedDate] = useState<Dayjs>(dayjs());
     const [userQuests, setUserQuests] = useState<UserQuestDetails[]>([]);
     const [userQuestCompletions, setUserQuestCompletions] = useState<QuestCompletion[]>([]);
+    const [completionDetailsModalOpen, setCompletionDetailsModalOpen] = useState(false);
+    const [selectedQuestCompletion, setSelectedQuestCompletion] = useState<QuestCompletion | null>();
+    const [selectedQuestName, setSelectedQuestName] = useState<string | null>();
 
     const { userProfile } = useUserStore();
 
@@ -62,9 +66,17 @@ const QuestsOverview = () => {
         }
     };
 
-    const showDescriptionModal = (completion: QuestCompletion) => {
+    const showDescriptionModal = (completion: QuestCompletion, questName: string) => {
         if (!completion) return;
-        console.log(completion);
+        setSelectedQuestCompletion(completion);
+        setSelectedQuestName(questName);
+        setCompletionDetailsModalOpen(true);
+    };
+
+    const closeDescriptionModal = () => {
+        setCompletionDetailsModalOpen(false);
+        setSelectedQuestCompletion(null);
+        setSelectedQuestName(null);
     };
 
     return (
@@ -144,6 +156,10 @@ const QuestsOverview = () => {
                                     const currentDate = dayjs();
                                     console.log(currentDate);
                                     const dayDate = selectedDate.date(day);
+
+                                    const questCreationDate = dayjs(userQuest.questDetails.quest.createdAt);
+                                    const isBeforeCreation = dayDate.isBefore(questCreationDate, 'day');
+
                                     const isPastDay = dayDate.isBefore(currentDate, 'day') || dayDate.isSame(currentDate, "day");
 
                                     const completion = userQuestCompletions.find((completion) => {
@@ -151,13 +167,15 @@ const QuestsOverview = () => {
                                         return completionDate.date() === day && completion.questId === userQuest.questDetails.quest.id;
                                     });
 
+
+
                                     return (
                                         <div
                                             key={day}
                                             className={`overview-grid-cell ${completion ? 'completed' : ''}`}
-                                            onClick={() => showDescriptionModal(completion!)}
+                                            onClick={() => showDescriptionModal(completion!, userQuest.questDetails.quest.name)}
                                         >
-                                            {isPastDay ? (completion ? '✅' : '❌') : '-'}
+                                            {isBeforeCreation ? '-' : (isPastDay ? (completion ? '✅' : '❌') : '-')}
                                         </div>
                                     )
                                 })}
@@ -167,6 +185,12 @@ const QuestsOverview = () => {
                     </div>
                 </div>
             </div>
+            <CompletionDetailsModal
+                isOpen={completionDetailsModalOpen}
+                onClose={closeDescriptionModal}
+                questCompletion={selectedQuestCompletion!}
+                questName={selectedQuestName!}
+            />
 
         </div>
     )
