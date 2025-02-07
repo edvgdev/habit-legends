@@ -33,31 +33,31 @@ const Admin = () => {
                         <AdminSection
                             title='Quests'
                             description='View, add, edit, and delete quests.'
-                            buttonText='Manage Quests'
+                            buttonText='Manage'
                             onClick={() => navigateToSubpage("quests")}
                         />
                         <AdminSection
                             title='Categories'
                             description='View, add, edit, and delete Categories.'
-                            buttonText='Manage Categories'
+                            buttonText='Manage'
                             onClick={() => navigateToSubpage("categories")}
                         />
                         <AdminSection
                             title='Ranks'
                             description='View, add, edit, and delete Ranks.'
-                            buttonText='Manage Ranks'
+                            buttonText='Manage'
                             onClick={() => navigateToSubpage("ranks")}
                         />
                         <AdminSection
                             title='Stats'
                             description='View, add, edit, and delete Stats.'
-                            buttonText='Manage Stats'
+                            buttonText='Manage'
                             onClick={() => navigateToSubpage("stats")}
                         />
                         <AdminSection
                             title='User Plans'
                             description='View, add, edit, and delete User Plans.'
-                            buttonText='Manage User Plans'
+                            buttonText='Manage'
                             onClick={() => navigateToSubpage("user-plans")}
                         />
                     </>
