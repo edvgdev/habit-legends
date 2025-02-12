@@ -1,9 +1,9 @@
-import { getAllUserStatsByUser, getStats } from '@/api/api';
-import { Stat } from '@/types/stat';
+import { getAllUserStatsByUser } from '@/api/api';
 import { UserProfile, UserProgressDetails, UserStatDetails } from '@/types/user';
 import React, { useEffect, useState } from 'react';
 import { FaTimes } from 'react-icons/fa';
 import Modal from 'react-modal';
+
 
 interface Props {
     open: boolean;
@@ -21,8 +21,9 @@ const ProfileModal = ({ open, onClose, userProfile, userProgress }: Props) => {
     }, []);
 
     const fetchData = async () => {
+        if (!userProfile) return;
         try {
-            const stats = await getAllUserStatsByUser(userProfile?.id);
+            const stats = await getAllUserStatsByUser(userProfile.id);
             setUserStats(stats);
         } catch (error) {
             console.error(error);
@@ -97,7 +98,9 @@ const ProfileModal = ({ open, onClose, userProfile, userProgress }: Props) => {
                     <h2>My Stats</h2>
                     <div className='profile-stats-container'>
                         {userStats.map((stat) => (
-                            <div className='profile-stats-item'>
+                            <div
+                                key={stat.statName}
+                                className='profile-stats-item'>
                                 <img
                                     src={stat.iconUrl}
                                     alt="icon"

@@ -29,7 +29,7 @@ public class QuestCompletionController {
      * @return DTO containing the saved quest completion details
      */
     @PostMapping
-    public ResponseEntity<QuestCompletionDTO> createQuestCompletion(
+    public ResponseEntity<CompletionDetails> createQuestCompletion(
             @RequestBody QuestCompletionDTO questCompletionDTO) {
         return ResponseEntity.ok(questCompletionService.createQuestCompletion(questCompletionDTO));
     }

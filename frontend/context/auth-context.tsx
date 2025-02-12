@@ -1,8 +1,9 @@
-import { getUserProfile } from '@/api/api';
+import { getUserProfile, getUserProgressDetails } from '@/api/api';
 import { loginAuth, logoutUser } from '@/api/auth';
 import LoadingModal from '@/components/loading-modal';
 import { LoginRequest } from "@/types/authentication";
 import useUserStore from "@/types/user";
+import { set } from 'lodash';
 import { useRouter } from "next/router";
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 
@@ -15,7 +16,7 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-    const { userProfile, setUserProfile, clearUserProfile, isAuthenticated, setIsAuthenticated } = useUserStore();
+    const { userProfile, setUserProfile, clearUserProfile, isAuthenticated, setIsAuthenticated, setUserProgressDetails } = useUserStore();
     const router = useRouter();
     const isInitialRender = useRef(true);
     const [isLoading, setIsLoading] = useState(false);
@@ -83,6 +84,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const getCurrentUser = async () => {
         const profile = await getUserProfile();
         setUserProfile(profile);
+        const progress = await getUserProgressDetails();
+        setUserProgressDetails(progress);
         if (!profile) {
             router.push("/login");
         } else {
@@ -97,10 +100,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     // Logout function
     const logout = async () => {
-        await logoutUser();
+        const email = userProfile?.email;
         clearUserProfile();
-        setIsAuthenticated(false);
         localStorage.removeItem("user-storage");
+        await logoutUser(email!);
+        setIsAuthenticated(false);
         router.push("/login");
     };
 

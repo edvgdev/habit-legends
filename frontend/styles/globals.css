@@ -26,9 +26,6 @@ body {
 }
 
 /* Main layout */
-
-
-
 .main-layout {
   display: flex;
   height: 100vh;
@@ -630,6 +627,27 @@ body {
 .menu-icon {
   display: flex;
   vertical-align: middle;
+}
+
+.upgrade-notice {
+  display: flex;
+  flex-direction: column;
+  background-color: #232C43;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  border-radius: 1rem;
+  margin: 0.8rem;
+  margin-top: auto;
+}
+
+.upgrade-notice h2 {
+  font-size: 1rem;
+}
+
+.upgrade-notice p{
+  font-size: 0.8rem;
+  color: grey;
 }
 
 /* Admin */

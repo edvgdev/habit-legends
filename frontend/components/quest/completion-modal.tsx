@@ -1,5 +1,5 @@
 import { submitQuestCompletion } from '@/api/api';
-import { QuestCompletion, UserQuestDetails } from '@/types/quest';
+import { CompletionDetails, QuestCompletion, UserQuestDetails } from '@/types/quest';
 import React, { useState } from 'react';
 import Modal from 'react-modal';
 import { toast } from 'react-toastify';
@@ -7,7 +7,7 @@ import { toast } from 'react-toastify';
 interface Props {
     open: boolean;
     onClose: () => void;
-    onSuccess: () => void;
+    onSuccess: (completionDetails: CompletionDetails) => void;
     quest?: UserQuestDetails | null;
     userId: number;
 }
@@ -33,10 +33,12 @@ const CompletionModal = ({ open, onClose, quest, onSuccess, userId }: Props) => 
             const savedCompletion = await submitQuestCompletion(questCompletion);
             toast.success(`${quest?.questDetails.quest.name} completed!`);
             console.log(savedCompletion);
+
+            onSuccess(savedCompletion);
         } catch (error) {
             toast.success(`Failed to complete ${quest?.questDetails.quest.name}, ${error}`);
         } finally {
-            onSuccess();
+
             onClose();
         }
 

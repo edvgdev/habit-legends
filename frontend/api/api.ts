@@ -1,5 +1,5 @@
 import { Category } from "@/types/category";
-import { QuestAndStatRewards, QuestCompletion, QuestCompletionFilterDetails, QuestDetails, UserQuest, UserQuestDetails } from "@/types/quest";
+import { CompletionDetails, QuestAndStatRewards, QuestCompletion, QuestCompletionFilterDetails, QuestDetails, UserQuest, UserQuestDetails } from "@/types/quest";
 import { Rank } from "@/types/Rank";
 import { Stat } from "@/types/stat";
 import { UserProgressDetails, UserStatDetails } from "@/types/user";
@@ -217,9 +217,9 @@ export const getUserProfile = async (): Promise<any> => {
     }
 };
 
-export const getUserProgressDetails = async (userId: number): Promise<UserProgressDetails> => {
+export const getUserProgressDetails = async (): Promise<UserProgressDetails> => {
     try {
-        const response: AxiosResponse<UserProgressDetails> = await api.get(`user-progress/details/${userId}`);
+        const response: AxiosResponse<UserProgressDetails> = await api.get('user-progress/details');
         return response.data;
     } catch (error) {
         console.error(error);
@@ -247,9 +247,9 @@ export const getAllUserQuests = async (userId: number): Promise<UserQuestDetails
     }
 };
 
-export const submitQuestCompletion = async (completion: QuestCompletion): Promise<QuestCompletion> => {
+export const submitQuestCompletion = async (completion: QuestCompletion): Promise<CompletionDetails> => {
     try {
-        const response: AxiosResponse<QuestCompletion> = await api.post("quest-completion", completion);
+        const response: AxiosResponse<CompletionDetails> = await api.post("quest-completion", completion);
         return response.data;
     } catch (error) {
         console.error(error);

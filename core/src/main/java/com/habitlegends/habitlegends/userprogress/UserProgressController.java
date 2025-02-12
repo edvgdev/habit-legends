@@ -42,9 +42,9 @@ public class UserProgressController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/details/{userId}")
-    public ResponseEntity<UserProgressDetails> getUserProgressDetails(@PathVariable("userId") Long userId) {
-        return ResponseEntity.ok(userProgressService.getUserProgressDetails(userId));
+    @GetMapping("/details")
+    public ResponseEntity<UserProgressDetails> getUserProgressDetails() {
+        return ResponseEntity.ok(userProgressService.getUserProgressDetails());
     }
 
 }

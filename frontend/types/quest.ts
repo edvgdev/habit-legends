@@ -1,4 +1,5 @@
 import { StatReward } from "./stat";
+import { ProgressUpdateDetails } from "./user";
 
 export interface Quest {
     id: number | null;
@@ -58,4 +59,9 @@ export interface QuestCompletionFilterDetails {
     startDate: string | null;
     endDate: string | null;
     description: string | null;
+}
+
+export interface CompletionDetails {
+    questCompletion: QuestCompletion;
+    progressUpdateInfoDetails: ProgressUpdateDetails[];
 }

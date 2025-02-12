@@ -92,6 +92,7 @@ const AddQuest = () => {
             <div className='quests-container'>
                 {quests.map((quest) => (
                     <QuestCard
+                        key={quest.quest.id}
                         openConfirmation={openConfirmationModal}
                         quest={quest}
                         statRewards={getStatsFromQuest(quest)}

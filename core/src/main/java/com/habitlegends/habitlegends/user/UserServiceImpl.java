@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -74,6 +76,15 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException("User not found");
         }
         userRepository.deleteById(id);
+    }
+
+    public UserDTO getCurrentAuthenticatedUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !(authentication.isAuthenticated())) {
+            throw new RuntimeException("No authenticated user");
+        }
+        User principal = (User) authentication.getPrincipal();
+        return modelMapper.map(principal, UserDTO.class);
     }
 
 }

@@ -48,9 +48,9 @@ export const isUserAuthenticated = async (): Promise<boolean> => {
     }
 };
 
-export const logoutUser = async (): Promise<void> => {
+export const logoutUser = async (email: string): Promise<void> => {
     try {
-        await api.post("/auth/logout")
+        await api.post(`/auth/logout?email=${email}`);
     } catch (error) {
         console.error("Logout failed");
     }

@@ -11,6 +11,11 @@ api.interceptors.response.use(
     async (error: AxiosError) => {
         const originalRequest = error.config;
 
+        // Skip refresh token logic if it's a logout request
+        if (originalRequest && originalRequest.url?.includes('/auth/logout')) {
+            return Promise.reject(error);  // Do nothing on logout request
+        }
+
         if ((error.response?.status === 401 && !(originalRequest as any)._retry)) {
 
             (originalRequest as any)._retry = true;

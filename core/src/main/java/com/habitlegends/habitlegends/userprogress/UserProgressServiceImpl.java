@@ -1,7 +1,9 @@
 package com.habitlegends.habitlegends.userprogress;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
@@ -9,6 +11,7 @@ import com.habitlegends.habitlegends.rank.Rank;
 import com.habitlegends.habitlegends.rank.RankDTO;
 import com.habitlegends.habitlegends.rank.RankService;
 import com.habitlegends.habitlegends.user.User;
+import com.habitlegends.habitlegends.user.UserDTO;
 import com.habitlegends.habitlegends.user.UserService;
 
 @Service
@@ -40,19 +43,38 @@ public class UserProgressServiceImpl implements UserProgressService {
     }
 
     @Override
-    public UserProgressDTO updateUserProgress(UserProgressDTO userProgressDTO) {
+    public List<ProgressUpdateInfoDetails> updateUserProgress(UserProgressDTO userProgressDTO) {
         // Fetch the existing UserProgress entity
         if (!userProgressRepository.existsById(userProgressDTO.getId())) {
             throw new RuntimeException("UserProgress not found");
         }
+
         // Prepare the updated entity using prepareDtoToSave
         UserProgress updatedUserProgress = prepareDtoToSave(userProgressDTO);
 
         // Save the updated UserProgress entity
         UserProgress savedUserProgress = userProgressRepository.save(updatedUserProgress);
 
+        List<ProgressUpdateInfoDetails> updateInfoList = new ArrayList<>();
+
+        if (userProgressDTO.getLevel() != savedUserProgress.getLevel()) {
+            ProgressUpdateInfoDetails updateInfoItem = new ProgressUpdateInfoDetails(ProgressCategory.LEVEL,
+                    userProgressDTO.getLevel(), savedUserProgress.getLevel(), null);
+
+            updateInfoList.add(updateInfoItem);
+
+        }
+
+        if (userProgressDTO.getRankId() != savedUserProgress.getRank().getId()) {
+            ProgressUpdateInfoDetails updateInfoItem = new ProgressUpdateInfoDetails(ProgressCategory.RANK,
+                    userProgressDTO.getRankId(), savedUserProgress.getRank().getId(),
+                    savedUserProgress.getRank().getName());
+
+            updateInfoList.add(updateInfoItem);
+        }
+
         // Convert the updated entity to a DTO and return it
-        return modelMapper.map(savedUserProgress, UserProgressDTO.class);
+        return updateInfoList;
     }
 
     @Override
@@ -86,9 +108,9 @@ public class UserProgressServiceImpl implements UserProgressService {
     }
 
     @Override
-    public void triggerProgressUpdateOnCompletion(Long userId, Integer expEarned) {
+    public List<ProgressUpdateInfoDetails> triggerProgressUpdateOnCompletion(Long userId, Integer expEarned) {
         if (expEarned <= 0) {
-            return; // No need to update progress if no experience is earned
+            return new ArrayList<>(); // No need to update progress if no experience is earned
         }
         UserProgressDTO userProgressDTO = getUserProgressByUserId(userId);
         if (userProgressDTO == null) {
@@ -97,20 +119,28 @@ public class UserProgressServiceImpl implements UserProgressService {
 
         userProgressDTO.setExp(userProgressDTO.getExp() + expEarned);
 
-        UserProgressDTO updatedUserProgress = updateUserProgress(
+        List<ProgressUpdateInfoDetails> updatedUserProgress = updateUserProgress(
                 userProgressDTO);
 
         // Transfer to logger in the future
         System.out.println(updatedUserProgress);
+
+        return updatedUserProgress;
     }
 
     @Override
-    public UserProgressDetails getUserProgressDetails(Long userId) {
-        UserProgressDTO userProgressDTO = getUserProgressByUserId(userId);
+    public UserProgressDetails getUserProgressDetails() {
+
+        UserDTO userDTO = userService.getCurrentAuthenticatedUser();
+
+        if (userDTO == null)
+            throw new RuntimeException("User not Found");
+
+        UserProgressDTO userProgressDTO = getUserProgressByUserId(userDTO.getId());
         RankDTO rank = rankService.getRankById(userProgressDTO.getRankId());
 
         UserProgressDetails userProgressDetails = new UserProgressDetails();
-        userProgressDetails.setUserId(userId);
+        userProgressDetails.setUserId(userDTO.getId());
         userProgressDetails.setLevel(userProgressDTO.getLevel());
         userProgressDetails.setExp(userProgressDTO.getExp());
         userProgressDetails.setRank(rank.getName());
@@ -126,11 +156,17 @@ public class UserProgressServiceImpl implements UserProgressService {
         User user = userService.getUserById(userProgressDTO.getUserId());
         userProgress.setUser(user);
 
+        Integer previousRankId = userProgress.getRank().getId();
+
         RankDTO rankDto = rankService.determineRank(userProgressDTO.getExp())
                 .orElse(null);
 
         Rank rank = modelMapper.map(rankDto, Rank.class);
         userProgress.setRank(rank);
+
+        // Send notification if the user has ranked up (skil during creation)
+        if (userProgressDTO.getId() != null && userProgress.getRank().getId() != previousRankId) {
+        }
 
         // Check for level-up during updates (skip during creation)
         if (userProgressDTO.getId() != null && checkForLevelUp(userProgressDTO.getLevel(), userProgressDTO.getExp())) {

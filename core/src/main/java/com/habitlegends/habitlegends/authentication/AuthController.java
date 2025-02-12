@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -72,7 +73,8 @@ public class AuthController {
      * @return ResponseEntity
      */
     @PostMapping("/logout")
-    public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<?> logout(@RequestParam("email") String email, HttpServletRequest request,
+            HttpServletResponse response) {
         // Logout user by clearing cookies
         authService.logoutUser(request, response);
         return ResponseEntity.ok().build();

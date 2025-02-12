@@ -25,7 +25,6 @@ const SideBar = ({ isSidebarExpanded, toggleSidebar }: Props) => {
         { name: "Daily Quests", path: "/daily-quest", icon: <FaTasks /> },
         { name: "Quests Overview", path: "/quests-overview", icon: <FaList /> },
         { name: "Admin", path: "/admin", icon: <FaUserCog /> },
-        { name: "Settings", path: "/settings", icon: <FaCog /> },
     ];
 
     const openModal = () => {
@@ -123,6 +122,17 @@ const SideBar = ({ isSidebarExpanded, toggleSidebar }: Props) => {
                         </li>
                     </ul>
                 </div>
+
+                {isSidebarExpanded && <div className='upgrade-notice'>
+                    <h2>Unlock more Features</h2>
+                    <p>Upgrade now to Premium to unlock all features</p>
+                    <button
+                        style={{ fontSize: "0.8rem", padding: "0 1.5rem" }}
+                        className='action-button-primary'
+                    >
+                        Upgrade
+                    </button>
+                </div>}
                 <ProfileModal
                     open={isProfileModalOpen}
                     onClose={closeModal}
