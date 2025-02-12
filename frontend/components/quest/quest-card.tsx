@@ -28,7 +28,7 @@ const QuestCard = ({ quest, statRewards, setSelected, openConfirmation, isAdded 
                 <div className='quest-card-reward'>
                     <p><span>+</span>{` ${quest.quest.baseExpReward} exp`}</p>
                     {statRewards.map((statReward) => (
-                        <p><span>+</span>{` ${statReward.reward} ${statReward.name}`}</p>
+                        <p key={statReward.name}><span>+</span>{` ${statReward.reward} ${statReward.name}`}</p>
                     ))}
                 </div>
                 <div className='quest-card-action'>

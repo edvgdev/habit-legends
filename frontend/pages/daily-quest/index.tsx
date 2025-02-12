@@ -1,6 +1,6 @@
-import { getAllQuestCompletions, getAllUserQuests, getStats } from '@/api/api';
+import { getAllQuestCompletions, getAllUserQuests, getStats, getUserProgressDetails } from '@/api/api';
 import UserQuestCard from '@/components/quest/user-quest-card';
-import { QuestCompletion, QuestCompletionFilterDetails, QuestDetails, UserQuestDetails } from '@/types/quest';
+import { CompletionDetails, QuestCompletion, QuestCompletionFilterDetails, QuestDetails, UserQuestDetails } from '@/types/quest';
 import { Stat, StatNameAndReward } from '@/types/stat';
 import useUserStore from '@/types/user';
 import { useRouter } from 'next/router';
@@ -8,12 +8,12 @@ import React, { useEffect, useState } from 'react'
 import { FaPlus, FaTimes } from 'react-icons/fa';
 import dayjs from 'dayjs';
 import CompletionModal from '@/components/quest/completion-modal';
-import { ToastContainer } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 
 const DailyQuest = () => {
 
     const router = useRouter();
-    const { userProfile } = useUserStore();
+    const { userProfile, setUserProgressDetails } = useUserStore();
 
     const [userQuests, setUserQuests] = useState<UserQuestDetails[]>([]);
     const [selectedQuest, setSelectedQuest] = useState<UserQuestDetails | null>();
@@ -26,46 +26,6 @@ const DailyQuest = () => {
     const [isFormModalOpen, setIsFormModalOpen] = useState(false);
 
     const dateToday = dayjs().format('MMMM D, YYYY');
-
-    const navigateToAddPage = () => {
-        router.push('/daily-quest/add');
-    };
-
-    const openFormModal = () => {
-        setIsFormModalOpen(true);
-    }
-
-    const closeFormModal = () => {
-        setIsFormModalOpen(false);
-    }
-
-    const onCompleteQuest = () => {
-        fetchData();
-        closeDrawer();
-    }
-
-    const handleQuestClick = (quest: UserQuestDetails) => {
-        setSelectedQuest(quest);
-        setSelectedQuestRewards(getStatsFromQuest(quest.questDetails));
-        setIsDrawerOpen(true);
-    }
-
-    const closeDrawer = () => {
-        setIsDrawerOpen(false);
-        setSelectedQuest(null);
-        setSelectedQuestRewards([]);
-    };
-
-    const getStatsFromQuest = (quest: QuestDetails): StatNameAndReward[] => {
-        return quest.questStatRewards.map(({ statId, baseStatReward }) => ({
-            name: stats.find(stat => stat.id === statId)?.name || "Unknown",
-            reward: baseStatReward,
-        }));
-    };
-
-    const checkIfCompleted = (questId: number): boolean => {
-        return userQuestCompletions.some(completion => completion.questId === questId);
-    }
 
     useEffect(() => {
         fetchData();
@@ -97,7 +57,67 @@ const DailyQuest = () => {
         } catch (error) {
             console.error(error);
         }
+    };
+
+    const navigateToAddPage = () => {
+        router.push('/daily-quest/add');
+    };
+
+    const openFormModal = () => {
+        setIsFormModalOpen(true);
     }
+
+    const closeFormModal = () => {
+        setIsFormModalOpen(false);
+    }
+
+    const onCompleteQuest = (completionDetails: CompletionDetails) => {
+        fetchData();
+        closeDrawer();
+        retrieveProgress(userProfile?.id!);
+        Array.isArray(completionDetails.progressUpdateInfoDetails)
+            && completionDetails.progressUpdateInfoDetails.length > 0
+            && (
+                completionDetails.progressUpdateInfoDetails.map((completionDetails) => {
+                    if (completionDetails.updatedProgress === "LEVEL") {
+                        toast.success(`Congratulations, You have reached Level ${completionDetails.newProgressValue}`);
+                    }
+
+                    if (completionDetails.updatedProgress === "RANK") {
+                        toast.success(`Congratulations, You have reached ${completionDetails.name}-Rank`);
+                    }
+                }));
+    }
+
+    const retrieveProgress = async (userId: number) => {
+        const progress = await getUserProgressDetails();
+        setUserProgressDetails(progress);
+    }
+
+    const handleQuestClick = (quest: UserQuestDetails) => {
+        setSelectedQuest(quest);
+        setSelectedQuestRewards(getStatsFromQuest(quest.questDetails));
+        setIsDrawerOpen(true);
+    }
+
+    const closeDrawer = () => {
+        setIsDrawerOpen(false);
+        setSelectedQuest(null);
+        setSelectedQuestRewards([]);
+    };
+
+    const getStatsFromQuest = (quest: QuestDetails): StatNameAndReward[] => {
+        return quest.questStatRewards.map(({ statId, baseStatReward }) => ({
+            name: stats.find(stat => stat.id === statId)?.name || "Unknown",
+            reward: baseStatReward,
+        }));
+    };
+
+    const checkIfCompleted = (questId: number): boolean => {
+        return userQuestCompletions.some(completion => completion.questId === questId);
+    }
+
+
 
     return (
         <div className='daily-quests'>
@@ -115,6 +135,7 @@ const DailyQuest = () => {
                             selectedQuest?.questDetails.quest.id;
                         return (
                             <UserQuestCard
+                                key={userQuest.questDetails.quest.id}
                                 userQuest={userQuest}
                                 onClick={handleQuestClick}
                                 isSelected={isSelected}
@@ -150,7 +171,7 @@ const DailyQuest = () => {
                                 <div className='quest-card-reward'>
                                     <p><span>+</span>{` ${selectedQuest.questDetails.quest.baseExpReward} Exp`}</p>
                                     {selectedQuestRewards.map((statReward) => (
-                                        <p><span>+</span>{` ${statReward.reward} ${statReward.name}`}</p>
+                                        <p key={statReward.name}><span>+</span>{` ${statReward.reward} ${statReward.name}`}</p>
                                     ))}
                                 </div>
                                 <div className='quest-card-action'>

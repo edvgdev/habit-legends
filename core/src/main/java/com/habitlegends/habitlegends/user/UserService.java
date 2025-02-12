@@ -15,4 +15,6 @@ public interface UserService {
     UserProfileDetails getUserProfile(UserDetails userDetails);
 
     User getUserById(Long id);
+
+    UserDTO getCurrentAuthenticatedUser();
 }

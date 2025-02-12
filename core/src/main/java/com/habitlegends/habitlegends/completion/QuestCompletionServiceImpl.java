@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.habitlegends.habitlegends.quest.QuestService;
 import com.habitlegends.habitlegends.statprogress.StatProgressService;
 import com.habitlegends.habitlegends.user.UserService;
+import com.habitlegends.habitlegends.userprogress.ProgressUpdateInfoDetails;
 import com.habitlegends.habitlegends.userprogress.UserProgressService;
 
 /**
@@ -50,18 +51,25 @@ public class QuestCompletionServiceImpl implements QuestCompletionService {
      */
     @Transactional
     @Override
-    public QuestCompletionDTO createQuestCompletion(QuestCompletionDTO questCompletionDTO) {
+    public CompletionDetails createQuestCompletion(QuestCompletionDTO questCompletionDTO) {
 
         QuestCompletion questCompletion = convertToEntity(questCompletionDTO);
         QuestCompletion savedQuestCompletion = questCompletionRepository.save(questCompletion);
 
         // Trigger progress update for the user progress
-        userProgressService.triggerProgressUpdateOnCompletion(savedQuestCompletion.getUser().getId(),
-                savedQuestCompletion.getExpEarned());
+        List<ProgressUpdateInfoDetails> progressUpdateInfoDetails = userProgressService
+                .triggerProgressUpdateOnCompletion(savedQuestCompletion.getUser().getId(),
+                        savedQuestCompletion.getExpEarned());
+
+        QuestCompletionDTO savedQuestCompletionDTO = modelMapper.map(savedQuestCompletion, QuestCompletionDTO.class);
+
+        CompletionDetails completionDetails = new CompletionDetails(
+                savedQuestCompletionDTO,
+                progressUpdateInfoDetails);
 
         // Add points to the user quest stat
         statProgressService.addPoints(questCompletionDTO.getUserId(), questCompletionDTO.getQuestId());
-        return modelMapper.map(savedQuestCompletion, QuestCompletionDTO.class);
+        return completionDetails;
     }
 
     /**

@@ -27,6 +27,13 @@ export interface UserStatDetails {
     iconUrl: string;
 }
 
+export interface ProgressUpdateDetails {
+    updatedProgress: string;
+    oldProgressValue: number;
+    newProgressValue: number;
+    name: string | null;
+}
+
 
 interface UserStore {
     userProfile: UserProfile | null;
